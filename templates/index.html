@@ -1,0 +1,2115 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f4f7fb">
+    <title>Document Intelligence | AI Workspace</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script>
+        try {
+            document.documentElement.dataset.theme =
+                sessionStorage.getItem("document-ai-theme") || "light";
+        } catch (_error) {}
+    </script>
+</head>
+<body data-page="{{ view|default('home') }}" data-summary-page="{{ url_for('workspace_page', view='summary') }}">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <button id="sidebar-backdrop" class="sidebar-backdrop" type="button" aria-label="Close navigation menu"></button>
+    <aside id="app-sidebar" class="app-sidebar" aria-label="Workspace sidebar">
+        <div class="sidebar-brand-row">
+            <a class="brand sidebar-brand" href="{{ url_for('index') }}" aria-label="DocuMind home" data-nav-target="home">
+                <span class="brand-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><path d="M7 3.75h7l4 4v12.5H7a2 2 0 0 1-2-2v-12.5a2 2 0 0 1 2-2Z"/><path d="M14 3.75v4h4M8.5 12h7M8.5 15.5h7M8.5 9h1.5"/></svg>
+                </span>
+                <span class="brand-copy">Docu<span>Mind</span><small>DOCUMENT INTELLIGENCE</small></span>
+            </a>
+            <button id="sidebar-collapse-toggle" class="sidebar-collapse-toggle" type="button" aria-label="Collapse sidebar" title="Collapse sidebar">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14.5 5-7 7 7 7"/></svg>
+            </button>
+        </div>
+        <p class="sidebar-section-label">WORKSPACE</p>
+        <nav class="sidebar-navigation" aria-label="Workspace navigation">
+            <a class="sidebar-link" href="{{ url_for('index') }}" data-nav-target="home" title="Home">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3.5 10 8.5-7 8.5 7v9a1.5 1.5 0 0 1-1.5 1.5h-14A1.5 1.5 0 0 1 3.5 19v-9Z"/><path d="M9 20.5v-7h6v7"/></svg><span>Home</span>
+            </a>
+            <a class="sidebar-link" href="{{ url_for('workspace_page', view='analyzer') }}" data-nav-target="analyzer" title="Document Analyzer">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3.5h9l5 5v12H5a2 2 0 0 1-2-2v-13a2 2 0 0 1 2-2Z"/><path d="M14 3.5v5h5M7.5 13h9M7.5 16.5h6"/></svg><span>Document Analyzer</span>
+            </a>
+            <a class="sidebar-link" href="{{ url_for('workspace_page', view='summary') }}" data-nav-target="summary" title="Document Summarization">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14M5 9h14M5 13h9M5 17h11M5 21h7"/></svg><span>Document Summarization</span>
+            </a>
+            <a class="sidebar-link" href="{{ url_for('workspace_page', view='listen') }}" data-nav-target="listen" title="Listen to Summary">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h3l5 4V6l-5 4H4Z"/><path d="M16 9a5 5 0 0 1 0 6m2.5-8.5a8.5 8.5 0 0 1 0 11"/></svg><span>Listen to Summary</span>
+            </a>
+            <a class="sidebar-link" href="{{ url_for('workspace_page', view='mind-map') }}" data-nav-target="mind-map" title="Mind Map">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="7" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="13" cy="18" r="2.5"/><path d="m8.4 6.7 7.1-.5M7.6 9l4.2 6.8m4.8-.2 1-7.1"/></svg><span>Mind Map</span>
+            </a>
+            <a class="sidebar-link" href="{{ url_for('workspace_page', view='ask-ai') }}" data-nav-target="ask-ai" title="Ask AI">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 11.5a8 8 0 0 1-8 8H7l-3.5 2v-6a8 8 0 1 1 17-4Z"/><path d="M8 11h8M8 14.5h5"/></svg><span>Ask AI</span>
+            </a>
+            <a class="sidebar-link" href="{{ url_for('workspace_page', view='comparison') }}" data-nav-target="comparison" title="Compare Documents">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 7H4V3M4 7a8 8 0 0 1 14-2m-2 12h4v4m0-4a8 8 0 0 1-14 2"/></svg><span>Compare Documents</span>
+            </a>
+            <a class="sidebar-link" href="{{ url_for('workspace_page', view='study-mode') }}" data-nav-target="study-mode" title="Study Mode">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 1 4 17.5v-12Z"/><path d="M4 17a2.5 2.5 0 0 1 2.5-2.5H20M8 7h8M8 10h6"/></svg><span>Study Mode</span>
+            </a>
+        </nav>
+        <p class="sidebar-section-label sidebar-section-secondary">PERSONAL</p>
+        <nav class="sidebar-navigation" aria-label="Personal navigation">
+            <a class="sidebar-link" href="{{ url_for('workspace_page', view='dashboard') }}" data-nav-target="dashboard" title="Dashboard">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V9m8 10V4m8 15v-7"/><path d="M2.5 19.5h19"/></svg><span>Dashboard</span>
+            </a>
+            <a class="sidebar-link" href="{{ url_for('workspace_page', view='history') }}" data-nav-target="history" title="History">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5m4-1v5l3.5 2"/></svg><span>History</span>
+            </a>
+            <a class="sidebar-link" href="{{ url_for('workspace_page', view='settings') }}" data-nav-target="settings" title="Settings">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 15 .1.1a1.8 1.8 0 0 1-2.5 2.5l-.1-.1a1.8 1.8 0 0 0-3.1 1.3v.2a1.8 1.8 0 0 1-3.6 0v-.2a1.8 1.8 0 0 0-3.1-1.3l-.1.1a1.8 1.8 0 1 1-2.5-2.5l.1-.1a1.8 1.8 0 0 0-1.3-3.1h-.2a1.8 1.8 0 0 1 0-3.6h.2a1.8 1.8 0 0 0 1.3-3.1l-.1-.1a1.8 1.8 0 1 1 2.5-2.5l.1.1a1.8 1.8 0 0 0 3.1-1.3v-.2a1.8 1.8 0 0 1 3.6 0v.2a1.8 1.8 0 0 0 3.1 1.3l.1-.1a1.8 1.8 0 1 1 2.5 2.5l-.1.1a1.8 1.8 0 0 0 1.3 3.1h.2a1.8 1.8 0 0 1 0 3.6h-.2a1.8 1.8 0 0 0-1.3 3.1Z"/></svg><span>Settings</span>
+            </a>
+        </nav>
+        <div class="sidebar-bottom">
+            <div class="sidebar-profile" aria-label="Current profile: local guest workspace">
+                <span class="profile-avatar" aria-hidden="true">DM</span>
+                <span class="profile-copy"><strong>Local workspace</strong><small>Guest session</small></span>
+                <span class="profile-status" aria-hidden="true"></span>
+            </div>
+        </div>
+    </aside>
+    <header class="mobile-topbar">
+        <button id="mobile-menu-toggle" class="mobile-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="app-sidebar">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+            <a class="brand mobile-brand" href="{{ url_for('index') }}" data-nav-target="home" aria-label="DocuMind home">
+            <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3.75h7l4 4v12.5H7a2 2 0 0 1-2-2v-12.5a2 2 0 0 1 2-2Z"/><path d="M14 3.75v4h4M8.5 12h7M8.5 15.5h7M8.5 9h1.5"/></svg></span>
+            <span class="brand-copy">Docu<span>Mind</span></span>
+        </a>
+        <span class="mobile-workspace-label">AI WORKSPACE</span>
+    </header>
+    <div class="app-content">
+    <header class="workspace-topbar">
+        <span class="workspace-topbar-title">{{ {'home': 'Home', 'analyzer': 'Document Analyzer', 'summary': 'Document Summarization', 'listen': 'Listen to Summary', 'mind-map': 'Mind Map', 'ask-ai': 'Ask AI', 'comparison': 'Compare Documents', 'study-mode': 'Study Mode', 'dashboard': 'Dashboard', 'history': 'History', 'settings': 'Settings'}.get(view|default('home'), 'Home') }}</span>
+        <span class="workspace-topbar-spacer"></span>
+        <span class="workspace-topbar-user">Local workspace</span>
+        <span class="workspace-topbar-avatar" aria-hidden="true">DM</span>
+    </header>
+
+    <header id="home" class="hero">
+        <div class="hero-glow hero-glow-one" aria-hidden="true"></div>
+        <div class="hero-glow hero-glow-two" aria-hidden="true"></div>
+        <div class="hero-content reveal">
+            <span class="eyebrow"><span class="status-dot"></span> YOUR AI DOCUMENT WORKSPACE</span>
+            <h1>Make every document<br><span>make more sense.</span></h1>
+            <p>Turn long documents into clear summaries, connected ideas, and answers you can act on.</p>
+            <a class="button button-primary hero-cta" href="#upload">
+                Start exploring
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+            </a>
+            <div class="trust-line">
+                <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>PDF, DOCX &amp; TXT</span>
+                <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>AI-powered insights</span>
+                <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>Temporary local file handling</span>
+            </div>
+        </div>
+        <div class="hero-visual reveal" aria-hidden="true">
+            <div class="visual-orbit orbit-one"></div>
+            <div class="visual-orbit orbit-two"></div>
+            <div class="visual-core"><span>AI</span><i></i></div>
+            <div class="float-card float-card-doc"><span class="mini-file-icon">PDF</span><span>Document<br><b>ready to explore</b></span></div>
+            <div class="float-card float-card-insight"><span class="mini-spark">✦</span><span>Key insight<br><b>found in your file</b></span></div>
+            <div class="float-pill">Ideas, connected <span>↗</span></div>
+        </div>
+    </header>
+
+    <section class="capability-strip" aria-label="Document intelligence features">
+            <a class="capability-card capability-summary" href="{{ url_for('workspace_page', view='summary') }}">
+            <span class="capability-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 5h14M5 9h14M5 13h9M5 17h11M5 21h7"/></svg></span>
+            <span><strong>Flexible summaries</strong><small>Small, medium or detailed</small></span>
+            <span class="capability-arrow" aria-hidden="true">↗</span>
+        </a>
+        <a class="capability-card capability-ask" href="{{ url_for('workspace_page', view='ask-ai') }}">
+            <span class="capability-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H7l-3 2v-6a7.5 7.5 0 1 1 16-3.5Z"/><path d="M8 11h8M8 14.5h5"/></svg></span>
+            <span><strong>Ask AI</strong><small>Answers grounded in your document</small></span>
+            <span class="capability-arrow" aria-hidden="true">↗</span>
+        </a>
+        <a class="capability-card capability-map" href="{{ url_for('workspace_page', view='mind-map') }}">
+            <span class="capability-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="6" cy="7" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="13" cy="18" r="2.5"/><path d="m8.4 6.7 7.1-.5M7.6 9l4.2 6.8m4.8-.2 1-7.1"/></svg></span>
+            <span><strong>Knowledge map</strong><small>Explore eight connected topics</small></span>
+            <span class="capability-arrow" aria-hidden="true">↗</span>
+        </a>
+        <a class="capability-card capability-compare" href="{{ url_for('workspace_page', view='comparison') }}">
+            <span class="capability-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 7H4V3M4 7a8 8 0 0 1 14-2m-2 12h4v4m0-4a8 8 0 0 1-14 2"/></svg></span>
+            <span><strong>Compare documents</strong><small>PDF, DOCX and TXT files</small></span>
+            <span class="capability-arrow" aria-hidden="true">↗</span>
+        </a>
+    </section>
+
+    <main id="main-content" class="page-shell">
+        <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for category, message in messages %}
+                <div class="toast toast-{{ category }}" role="status">
+                    <span class="toast-icon" aria-hidden="true">{% if category == "error" %}×{% else %}✓{% endif %}</span>
+                    <span>{{ message }}</span>
+                    <button class="toast-close" type="button" aria-label="Dismiss notification">×</button>
+                </div>
+                {% endfor %}
+            {% endwith %}
+        </div>
+
+        <section id="upload" class="workspace-section reveal">
+            <div class="section-heading section-heading-centered">
+                <div>
+                    <span class="section-kicker">01 / GET STARTED</span>
+                    <h2>Bring your document in</h2>
+                    <p>Drop in a file and let your AI workspace do the heavy reading.</p>
+                </div>
+                <span class="step-badge">01 <i>/</i> 03</span>
+            </div>
+
+            <div class="panel upload-panel">
+                <form id="upload-form" method="POST" action="{{ url_for('index') }}" enctype="multipart/form-data">
+                    <input type="file" id="document" name="document" class="visually-hidden-file" accept=".pdf,.docx,.txt" required>
+                    <label class="drop-zone" id="drop-zone" for="document" tabindex="0">
+                        <span class="upload-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5"/><path d="M5 14v4.25A1.75 1.75 0 0 0 6.75 20h10.5A1.75 1.75 0 0 0 19 18.25V14"/></svg>
+                        </span>
+                        <span class="drop-title">Drag &amp; drop your document here</span>
+                        <span class="drop-subtitle">or <span>browse files</span> from your device</span>
+                        <span class="file-formats">PDF <i>·</i> DOCX <i>·</i> TXT <i>·</i> UP TO 10 MB</span>
+                    </label>
+                    <div class="file-preview" id="file-preview" hidden>
+                        <span class="file-type-icon" id="file-type-icon">DOC</span>
+                        <span class="file-meta"><strong id="file-name"></strong><small id="file-size"></small></span>
+                        <button class="remove-file" id="remove-file" type="button" aria-label="Remove selected file" title="Remove file">×</button>
+                    </div>
+                    <div class="form-options">
+                        <div class="form-field">
+                            <label class="field-label" for="summary-format">Summary format</label>
+                            <select id="summary-format" name="summary_format" class="select">
+                                <option value="custom" {% if selected_format == "custom" %}selected{% endif %}>Custom length</option>
+                                {% for key, info in summary_formats.items() %}
+                                <option value="{{ key }}" {% if selected_format == key %}selected{% endif %}>{{ info.label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-field" id="custom-length-options" {% if selected_format != "custom" %}hidden{% endif %}>
+                            <label class="field-label" for="summary-type-group">Summary length</label>
+                            <div class="choice-group" id="summary-type-group">
+                                {% for key, info in summary_types.items() %}
+                                <label class="choice-pill">
+                                    <input type="radio" name="summary_type" value="{{ key }}" {% if key == selected %}checked{% endif %}>
+                                    <span>{% if key == "short" %}Small{% elif key == "medium" %}Medium{% else %}High / Detailed{% endif %}</span>
+                                </label>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="form-field">
+                            <label class="field-label" for="language">Output language</label>
+                            <select id="language" name="language" class="select">
+                                {% for key, label in summary_languages.items() %}
+                                <option value="{{ key }}" {% if selected_language == key %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                                <option value="other" {% if selected_language not in summary_languages %}selected{% endif %}>Other language...</option>
+                            </select>
+                            <input id="custom-language" name="custom_language" class="select custom-language"
+                                   type="text" maxlength="40" placeholder="Enter a language, e.g. Korean"
+                                   value="{% if selected_language not in summary_languages %}{{ selected_language }}{% endif %}"
+                                   {% if selected_language in summary_languages %}hidden{% endif %}>
+                        </div>
+                    </div>
+                    <button type="submit" id="submit-btn" class="button button-primary submit-button">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 1.7 5.3L19 10l-5.3 1.7L12 17l-1.7-5.3L5 10l5.3-1.7L12 3Z"/><path d="m19 16 .8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8L19 16Z"/></svg>
+                        <span id="submit-btn-label">Analyse Document</span>
+                        <span class="button-arrow">→</span>
+                    </button>
+                    <div id="processing-panel" class="processing-panel" hidden aria-live="polite">
+                        <div class="processing-heading"><span class="processing-orb"></span><span id="processing-status" role="status">Uploading your document…</span><span class="typing-dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+                        <div class="progress-track"><span></span></div>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <div id="result-mount" aria-live="polite">
+        {% if result %}
+        <section id="result-content" class="workspace-section reveal is-visible">
+            <script id="history-entry-data" type="application/json">{{ {
+                "id": document_id,
+                "filename": filename,
+                "summary": result.summary,
+                "language": result.language,
+                "word_count": result.word_count
+            }|tojson }}</script>
+            <div class="section-heading">
+                <div>
+                    <span class="section-kicker">02 / YOUR RESULTS</span>
+                    <h2>Here’s the bigger picture</h2>
+                    <p>Your document, made easier to understand and explore.</p>
+                </div>
+                <span class="success-chip"><i></i> ANALYSIS COMPLETE</span>
+            </div>
+
+            <div class="stats-grid" id="analysis" data-result-page="analyzer">
+                <article class="stat-card">
+                    <span class="stat-icon stat-icon-blue"><svg viewBox="0 0 24 24"><path d="M7 3.75h7l4 4v12.5H7a2 2 0 0 1-2-2v-12.5a2 2 0 0 1 2-2Z"/><path d="M14 3.75v4h4M8.5 12h7M8.5 15.5h5"/></svg></span>
+                    <span class="stat-label">DOCUMENT</span>
+                    <strong class="stat-value stat-file">{{ filename }}</strong>
+                    <small>Uploaded successfully</small>
+                </article>
+                <article class="stat-card">
+                    <span class="stat-icon stat-icon-violet"><svg viewBox="0 0 24 24"><path d="M5 5h14M5 9h14M5 13h9M5 17h11M5 21h7"/></svg></span>
+                    <span class="stat-label">CONTENT SIZE</span>
+                    <strong class="stat-value">{{ "{:,}".format(result.word_count) }}</strong>
+                    <small>Words in your document</small>
+                </article>
+                {% if result.analysis %}
+                <article class="stat-card">
+                    <span class="stat-icon stat-icon-cyan"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17M3.5 12h17M6 6l12 12"/></svg></span>
+                    <span class="stat-label">CATEGORY</span>
+                    <strong class="stat-value">{{ result.analysis.document_type }}</strong>
+                    <small>Detected document type</small>
+                </article>
+                <article class="stat-card">
+                    <span class="stat-icon stat-icon-gold"><svg viewBox="0 0 24 24"><path d="m12 3 2.4 5.4L20 11l-5.6 2.6L12 19l-2.4-5.4L4 11l5.6-2.6L12 3Z"/></svg></span>
+                    <span class="stat-label">MAIN TOPIC</span>
+                    <strong class="stat-value">{{ result.analysis.main_topic }}</strong>
+                    <small>Central idea identified</small>
+                </article>
+                {% endif %}
+            </div>
+
+            <article id="summary" class="panel summary-panel" data-result-page="summary">
+                <div class="panel-heading">
+                    <div class="heading-with-icon">
+                        <span class="panel-icon"><svg viewBox="0 0 24 24"><path d="M12 3 14.5 9.5 21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5L12 3Z"/></svg></span>
+                        <div><span class="section-kicker">AI-GENERATED</span><h3>Document summary</h3></div>
+                    </div>
+                    <span class="badge">{% if selected_format == "custom" %}{% if selected == "short" %}Small{% elif selected == "medium" %}Medium{% else %}High / Detailed{% endif %}{% else %}{{ result.summary_type }}{% endif %} <i>·</i> {{ result.language }}</span>
+                </div>
+                {% if result.analysis %}
+                <div class="topic-line"><span>TOPIC</span><strong>{{ result.analysis.main_topic }}</strong></div>
+                {% endif %}
+                <div class="summary-prose">{{ result.summary }}</div>
+                {% if result.key_points %}
+                <div class="keypoint-heading"><h4>Key takeaways</h4><span>{{ result.key_points|length }} INSIGHTS</span></div>
+                <ol class="key-points">
+                    {% for point in result.key_points %}
+                    <li id="key-point-{{ loop.index0 }}"><span class="keypoint-number">{{ "%02d"|format(loop.index) }}</span><span>{{ point }}</span></li>
+                    {% endfor %}
+                </ol>
+                {% endif %}
+                {% if result.analysis and result.analysis.keywords %}
+                <div class="keyword-row">
+                    <span class="field-label">KEYWORDS</span>
+                    <div class="keywords">
+                        {% for keyword in result.analysis.keywords %}<span class="keyword">{{ keyword }}</span>{% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                <div class="summary-actions">
+                    <button id="copy-summary" class="button button-outline" type="button" data-copy="{{ result.summary|e }}">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
+                        Copy summary
+                    </button>
+                    <form id="download-form" method="POST" action="{{ url_for('download') }}">
+                        <input type="hidden" name="summary" value="{{ result.summary }}">
+                        <input type="hidden" name="filename" value="{{ filename }}">
+                        <input type="hidden" name="summary_type" value="{{ result.summary_type }}">
+                        <input type="hidden" name="language" value="{{ result.language }}">
+                        {% for point in result.key_points %}<input type="hidden" name="key_points" value="{{ point }}">{% endfor %}
+                        <button type="submit" class="button button-primary button-compact">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M5 16v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3"/></svg>
+                            Download .txt
+                        </button>
+                    </form>
+                </div>
+            </article>
+
+            {% if result.graph_error %}<div class="toast toast-error inline-notice">{{ result.graph_error }}</div>{% endif %}
+            <section class="panel feature-panel" id="knowledge-map" data-result-page="mind-map">
+                <div class="panel-heading">
+                    <div class="heading-with-icon"><span class="panel-icon panel-icon-teal"><svg viewBox="0 0 24 24"><circle cx="6" cy="7" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="13" cy="18" r="2.5"/><path d="m8.4 6.7 7.1-.5M7.6 9l4.2 6.8m4.8-.2 1-7.1"/></svg></span><div><span class="section-kicker">CONNECTED IDEAS</span><h3>Knowledge map</h3></div></div>
+                    <span class="subtle-count">8 MAIN TOPICS</span>
+                </div>
+                <p class="panel-description">Explore eight key topics arranged around the main idea. Hover for context; scroll to zoom and drag to pan.</p>
+                <div class="graph-toolbar">
+                    <label for="graph-search" class="sr-only">Find a graph concept</label>
+                    <input id="graph-search" type="search" placeholder="Find a concept...">
+                    <div class="graph-legend"><span><i class="legend-concept"></i>Concept</span><span><i class="legend-entity"></i>Entity</span><span><i class="legend-keyword"></i>Keyword</span></div>
+                </div>
+                <div class="graph-frame"><svg id="knowledge-graph" viewBox="0 0 1000 640" role="img" aria-label="Interactive document knowledge graph"></svg></div>
+                <div class="graph-more-row">
+                    <span id="graph-topic-count" class="graph-topic-count" aria-live="polite">Showing 8 main topics</span>
+                    <button id="graph-show-more" type="button" class="button button-outline graph-more-button" hidden>Show More <span aria-hidden="true">↓</span></button>
+                </div>
+                <div id="graph-details" class="graph-details" aria-live="polite">Select a node to view its relationships.</div>
+                <script id="graph-data" type="application/json">{{ {
+                    "graph": result.graph,
+                    "main_topic": result.analysis.main_topic if result.analysis else "",
+                    "keywords": result.analysis.keywords if result.analysis else [],
+                    "key_points": result.key_points,
+                    "summary": result.summary
+                }|tojson }}</script>
+            </section>
+
+            {% if result.highlights %}
+            <section class="panel feature-panel" id="document-highlights" data-result-page="analyzer">
+                <div class="panel-heading"><div class="heading-with-icon"><span class="panel-icon panel-icon-green"><svg viewBox="0 0 24 24"><path d="M5 5h14M5 10h14M5 15h8M5 20h11"/></svg></span><div><span class="section-kicker">SOURCE VIEW</span><h3>Importance highlights</h3></div></div>                </div>
+
+                <p class="panel-description">Sentences connected to the summary and key ideas are highlighted below.</p>
+                <div class="highlight-legend"><span class="importance-high">High importance</span><span class="importance-medium">Medium importance</span><span class="importance-low">Normal</span></div>
+                <div class="document-viewer">
+                    {% for sentence in result.highlights %}
+                    <p class="highlight-sentence importance-{{ sentence.level }}">{{ sentence.text }}{% for point_index in sentence.points %}<a class="point-link" href="#key-point-{{ point_index }}">Key point {{ point_index + 1 }}</a>{% endfor %}</p>
+                    {% endfor %}
+                </div>
+            </section>
+            {% endif %}
+
+            <section class="panel feature-panel listen-page" id="listen-summary" data-result-page="listen" aria-labelledby="listen-page-title">
+                <div class="section-heading">
+                    <div><span class="section-kicker">AUDIO SUMMARY</span><h2 id="listen-page-title">Listen to Summary</h2><p>Listen, follow along, and see each spoken word highlighted as the summary plays.</p></div>
+                </div>
+                <div class="listen-player">
+                    <div class="voice-summary-copy">
+                        <span class="voice-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M4 10v4h3l5 4V6l-5 4H4Z"/><path d="M16 9a5 5 0 0 1 0 6m2.5-8.5a8.5 8.5 0 0 1 0 11"/></svg>
+                        </span>
+                        <span><strong id="voice-heading">Your summary, read aloud</strong><small id="voice-status" role="status">Ready when you are.</small></span>
+                        <span class="voice-indicator" id="voice-indicator" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+                    </div>
+                    <div class="voice-controls">
+                        <label class="voice-select-label" for="voice-select">VOICE</label>
+                        <select id="voice-select" class="select voice-select" aria-label="Select a speech voice"><option value="">Default voice</option></select>
+                        <label class="voice-select-label" for="voice-rate">SPEED</label>
+                        <select id="voice-rate" class="select voice-select rate-select" aria-label="Select speech speed">
+                            <option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option>
+                        </select>
+                        <button id="voice-play" type="button" class="button button-primary voice-button" aria-label="Play summary"><span aria-hidden="true">▶</span> Play</button>
+                        <button id="voice-pause" type="button" class="button button-outline voice-button" aria-label="Pause summary" disabled><span aria-hidden="true">Ⅱ</span> Pause</button>
+                        <button id="voice-resume" type="button" class="button button-outline voice-button" aria-label="Resume summary" disabled><span aria-hidden="true">▶</span> Resume</button>
+                        <button id="voice-stop" type="button" class="button button-outline voice-button" aria-label="Stop summary" disabled><span aria-hidden="true">■</span> Stop</button>
+                        <span class="voice-unsupported" id="voice-unsupported" hidden>Speech playback is not supported by this browser.</span>
+                    </div>
+                    <div id="voice-transcript" class="voice-transcript" aria-live="polite">Your summary will appear here as it is spoken.</div>
+                    <script id="listen-summary-data" type="application/json">{{ result.summary|tojson }}</script>
+                </div>
+            </section>
+
+            <div class="feature-grid">
+                <section class="panel feature-panel" id="ask-ai" data-result-page="home">
+                    <div class="panel-heading"><div class="heading-with-icon"><span class="panel-icon panel-icon-violet"><svg viewBox="0 0 24 24"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H7l-3 2v-6a7.5 7.5 0 1 1 16-3.5Z"/><path d="M8 11h8M8 14.5h5"/></svg></span><div><span class="section-kicker">ASK AI · DOCUMENT GROUNDED</span><h3>Ask AI about your document</h3></div></div><span class="online-chip"><i></i> READY</span></div>
+                    <input id="ask-document-id" type="hidden" value="{{ document_id }}">
+                    <p class="panel-description">Open a private chat to ask follow-up questions grounded in <strong>{{ filename }}</strong>.</p>
+                    <a class="button button-primary" href="{{ url_for('workspace_page', view='ask-ai') }}">Open Ask AI <span aria-hidden="true">→</span></a>
+                </section>
+
+                <section class="panel feature-panel" id="study-mode" data-result-page="study-mode">
+                    <div class="panel-heading"><div class="heading-with-icon"><span class="panel-icon panel-icon-gold"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 1 4 17.5v-12Z"/><path d="M4 17a2.5 2.5 0 0 1 2.5-2.5H20M8 7h8M8 10h6"/></svg></span><div><span class="section-kicker">LEARN BY RECALLING</span><h3>Study mode</h3></div></div></div>
+                    <p class="panel-description">Review document key points, practise with flashcards, and generate exam questions for a self-check quiz.</p>
+                    {% if result.key_points %}
+                    <details class="study-key-points">
+                        <summary>Review {{ result.key_points|length }} document key points</summary>
+                        <ol>
+                            {% for point in result.key_points %}
+                            <li><a href="#key-point-{{ loop.index0 }}">{{ point }}</a></li>
+                            {% endfor %}
+                        </ol>
+                    </details>
+                    <div class="flashcard-panel" id="flashcard-panel">
+                        <div class="quiz-topline"><span>FLASHCARDS</span><span id="flashcard-count">CARD 1</span></div>
+                        <article class="flashcard" id="flashcard-card">
+                            <div class="flashcard-inner">
+                                <div class="flashcard-face flashcard-front" aria-hidden="false">
+                                    <span id="flashcard-prompt">KEY TAKEAWAY 1 · TRY TO RECALL</span>
+                                    <p>Pause and recall the key point before flipping.</p>
+                                </div>
+                                <div class="flashcard-face flashcard-back" aria-hidden="true">
+                                    <span>KEY POINT</span>
+                                    <p id="flashcard-answer"></p>
+                                </div>
+                            </div>
+                        </article>
+                        <div class="flashcard-actions">
+                            <button type="button" class="button button-outline" id="flashcard-toggle">Reveal key point</button>
+                            <button type="button" class="button button-primary" id="flashcard-next">Next card →</button>
+                        </div>
+                        <script id="flashcard-data" type="application/json">{{ result.key_points|tojson }}</script>
+                    </div>
+                    {% endif %}
+                    <div class="mcq-studio" id="mcq-studio"
+                         data-endpoint="{{ url_for('study_quiz') }}"
+                         data-results-endpoint="{{ url_for('quiz_results') }}"
+                         data-document-id="{{ document_id }}">
+                        <div class="mcq-studio-heading">
+                            <div><span class="section-kicker">LIVE PRACTICE · 10 MINUTES</span><h4>Interactive MCQ quiz</h4></div>
+                            <span class="mcq-live-badge"><i></i> TIMED</span>
+                        </div>
+                        <p class="panel-description">Answer document-based questions, move between questions, and submit whenever you are ready. Your results are saved to the dashboard.</p>
+                        <div id="mcq-empty" class="study-empty"{% if study_quiz %} hidden{% endif %}>
+                            <span class="study-empty-icon" aria-hidden="true">✦</span>
+                            <strong>Your live quiz is ready to build</strong>
+                            <p>Generate a fresh set of multiple-choice questions with answer explanations.</p>
+                        </div>
+                        <div id="mcq-question-wrap" class="mcq-question-wrap"{% if not study_quiz %} hidden{% endif %}>
+                            <div class="quiz-topline"><span id="mcq-progress-label">QUESTION 1</span><span class="mcq-timer" id="mcq-timer" role="timer" aria-live="off">10:00</span></div>
+                            <div class="quiz-progress"><span id="mcq-progress-bar"></span></div>
+                            <h5 id="mcq-question" class="mcq-question"></h5>
+                            <div id="mcq-options" class="mcq-options"></div>
+                            <p id="mcq-feedback" class="mcq-feedback" role="status" hidden></p>
+                            <div class="mcq-actions">
+                                <button type="button" class="button button-outline" id="mcq-previous">← Previous</button>
+                                <button type="button" class="button button-outline" id="mcq-next">Next →</button>
+                                <button type="button" class="button button-primary" id="mcq-submit">Submit quiz</button>
+                            </div>
+                        </div>
+                        <div id="mcq-results" class="mcq-results" hidden>
+                            <div class="mcq-score-grid">
+                                <div><strong id="mcq-score-total">0 / 0</strong><span>Final score</span></div>
+                                <div><strong id="mcq-score-correct">0</strong><span>Correct</span></div>
+                                <div><strong id="mcq-score-wrong">0</strong><span>Wrong</span></div>
+                                <div><strong id="mcq-score-percent">0%</strong><span>Percentage</span></div>
+                            </div>
+                            <div class="mcq-topic-results"><h5>Topic performance</h5><div id="mcq-topic-list"></div></div>
+                            <div class="mcq-review"><h5>Answers and explanations</h5><ol id="mcq-review-list"></ol></div>
+                        </div>
+                        <script id="mcq-data" type="application/json">{{ study_quiz|default(none)|tojson }}</script>
+                        <script id="mcq-result-data" type="application/json">{{ study_quiz_result|default(none)|tojson }}</script>
+                        <button type="button" class="button button-primary mcq-generate" id="mcq-generate">
+                            {% if study_quiz %}Regenerate Questions{% else %}Generate MCQ Questions{% endif %}<span aria-hidden="true">→</span>
+                        </button>
+                        <div id="mcq-generation-status" class="study-generation-status" role="status" aria-live="polite" hidden><span class="processing-orb"></span><span>Generating questions from your document…</span><span class="typing-dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+                    </div>
+                    {% if exam_questions %}
+                    <div class="quiz-panel" id="quiz-panel">
+                        <div class="quiz-topline"><span id="quiz-progress-label">QUESTION 1</span><span id="quiz-score">0 reviewed</span></div>
+                        <div class="quiz-progress"><span id="quiz-progress-bar"></span></div>
+                        <div id="quiz-question" class="quiz-question"></div>
+                        <p class="self-check-note">Think through your answer, then rate your recall.</p>
+                        <div class="quiz-actions"><button type="button" class="button button-outline quiz-rate" data-rating="review">Need to review</button><button type="button" class="button button-primary quiz-rate" data-rating="know">Got it</button></div>
+                        <div class="quiz-finish" id="quiz-finish" hidden><span class="finish-check">✓</span><h4>Study round complete</h4><p id="quiz-final-score"></p><button type="button" class="button button-outline" id="quiz-restart">Start again</button></div>
+                        <script id="quiz-data" type="application/json">{{ exam_questions|tojson }}</script>
+                    </div>
+                    {% else %}
+                    <div class="study-empty"><span class="study-empty-icon">✦</span><strong>Your question deck is ready to build</strong><p>Generate document-based 2, 5 and 10 mark questions to begin a study round.</p></div>
+                    {% endif %}
+                    <div class="study-generator">
+                        <div class="study-generator-orbit" aria-hidden="true"><span><svg viewBox="0 0 24 24"><path d="m12 3 2.4 5.4L20 11l-5.6 2.6L12 19l-2.4-5.4L4 11l5.6-2.6L12 3Z"/></svg></span></div>
+                        <span class="section-kicker">YOUR NEXT STUDY ROUND</span>
+                        <h4>{% if exam_questions %}Ready for another round?{% else %}Build your study question deck{% endif %}</h4>
+                        <p>Generate a fresh set of document-based 2, 5 and 10 mark questions.</p>
+                        <form id="exam-form" method="POST" action="{{ url_for('exam_questions') }}">
+                        <input type="hidden" name="document_id" value="{{ document_id }}">
+                            <button type="submit" class="button button-primary study-generate">
+                                <span class="study-generate-label">{% if exam_questions %}Regenerate questions{% else %}Generate Study Questions{% endif %}</span>
+                                <span aria-hidden="true">→</span>
+                            </button>
+                        </form>
+                        <div id="study-generation-status" class="study-generation-status" role="status" aria-live="polite" hidden><span class="processing-orb"></span><span id="study-generation-message">Building a fresh question set from your document…</span><span class="typing-dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+                    </div>
+                </section>
+            </div>
+        </section>
+        {% endif %}
+        </div>
+
+        <section id="page-empty-state" class="panel page-empty-state" hidden>
+            <span class="section-kicker">DOCUMENT REQUIRED</span>
+            <h2>This workspace needs an analysed document</h2>
+            <p>Upload a PDF, DOCX or TXT file to generate its summary, mind map and study materials.</p>
+            <a class="button button-primary" href="{{ url_for('workspace_page', view='analyzer') }}">Open Document Analyzer</a>
+        </section>
+
+        <section id="comparison" class="workspace-section reveal">
+            <div class="section-heading section-heading-centered">
+                <div><span class="section-kicker">03 / SIDE BY SIDE</span><h2>Compare Documents</h2><p>Compare two PDF, DOCX or TXT files to see what changed, what’s new, and what deserves a closer look.</p></div>
+                <span class="step-badge">02 <i>/</i> 03</span>
+            </div>
+            <div class="panel comparison-panel">
+                <form id="compare-form" method="POST" action="{{ url_for('compare') }}" enctype="multipart/form-data">
+                    <div class="comparison-inputs">
+                        <div class="comparison-file">
+                            <label class="field-label" for="document-a">DOCUMENT 1</label>
+                            <input type="file" id="document-a" name="document_a" class="visually-hidden-file" accept=".pdf,.docx,.txt" required>
+                            <label for="document-a" class="comparison-drop" id="drop-zone-a"><span class="compare-file-icon">01</span><span class="comparison-file-meta"><strong>Choose first document</strong><small>PDF, DOCX or TXT · max 10 MB</small><em class="comparison-selected" id="document-a-selected"></em></span><span class="choose-link">Browse</span></label>
+                        </div>
+                        <div class="comparison-file">
+                            <label class="field-label" for="document-b">DOCUMENT 2</label>
+                            <input type="file" id="document-b" name="document_b" class="visually-hidden-file" accept=".pdf,.docx,.txt" required>
+                            <label for="document-b" class="comparison-drop" id="drop-zone-b"><span class="compare-file-icon compare-file-icon-alt">02</span><span class="comparison-file-meta"><strong>Choose second document</strong><small>PDF, DOCX or TXT · max 10 MB</small><em class="comparison-selected" id="document-b-selected"></em></span><span class="choose-link">Browse</span></label>
+                        </div>
+                    </div>
+                    <button type="submit" id="compare-btn" class="button button-primary compare-submit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 7H4V3M4 7a8 8 0 0 1 14-2m-2 12h4v4m0-4a8 8 0 0 1-14 2"/></svg>Compare Documents <span>→</span></button>
+                    <div id="compare-loading" class="processing-panel compact-processing" hidden><div class="processing-heading"><span class="processing-orb"></span><span>Finding what changed</span><span class="typing-dots"><i></i><i></i><i></i></span></div><div class="progress-track"><span></span></div></div>
+                </form>
+                {% if comparison %}
+                <div class="comparison-results">
+                    <div class="comparison-pair"><span class="pair-document"><i>01</i>{{ comparison.filename_a }}</span><span class="pair-connector">compared with</span><span class="pair-document"><i>02</i>{{ comparison.filename_b }}</span></div>
+                    <article class="delta-summary"><span class="section-kicker">THE BIG PICTURE</span><h3>Overall delta summary</h3><p>{{ comparison.delta_summary }}</p></article>
+                    <div class="diff-grid">
+                        {% for key, heading, color in [("similarities", "Similarities", "similarities"), ("added", "Added content", "added"), ("removed", "Removed content", "removed"), ("changed", "Changed content", "changed"), ("important_differences", "Important differences", "differences")] %}
+                        <article class="diff-card diff-{{ color }}"><h3><i></i>{{ heading }}</h3>{% if comparison[key] %}<ul>{% for item in comparison[key] %}<li>{{ item }}</li>{% endfor %}</ul>{% else %}<p>No notable items identified.</p>{% endif %}</article>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </section>
+        <section id="history" class="workspace-section utility-section reveal">
+            <div class="section-heading">
+                <div>
+                    <span class="section-kicker">YOUR WORKSPACE</span>
+                    <h2>Document history</h2>
+                    <p>Your recent summaries are saved in this browser on this device.</p>
+                </div>
+                <button id="clear-history" class="button button-outline history-clear" type="button">Clear history</button>
+            </div>
+            <div class="panel utility-panel">
+                <div id="history-empty" class="history-empty">
+                    <span class="history-empty-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5m4-1v5l3.5 2"/></svg>
+                    </span>
+                    <strong>No documents in your history yet</strong>
+                    <p>Analyse a document and its summary will appear here for quick reference.</p>
+                    <a class="button button-outline" href="{{ url_for('workspace_page', view='analyzer') }}">Analyse a document</a>
+                </div>
+                <ol id="history-list" class="history-list" aria-live="polite"></ol>
+            </div>
+        </section>
+        <section id="settings" class="workspace-section utility-section reveal">
+            <div class="section-heading">
+                <div>
+                    <span class="section-kicker">PREFERENCES</span>
+                    <h2>Settings</h2>
+                    <p>Personalize the appearance of your document workspace.</p>
+                </div>
+            </div>
+            <div class="panel utility-panel settings-panel">
+                <div class="settings-copy">
+                    <span class="settings-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
+                    </span>
+                    <span><strong>Appearance</strong><small>Choose the color theme used across this workspace.</small></span>
+                </div>
+                <button id="theme-toggle" class="theme-toggle settings-theme-toggle" type="button" aria-label="Switch to dark mode" title="Toggle light and dark appearance">
+                    <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
+                    <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.2 15.2A8.7 8.7 0 0 1 8.8 3.8 8.8 8.8 0 1 0 20.2 15.2Z"/></svg>
+                    <span id="theme-toggle-label">Dark mode</span>
+                </button>
+                <p class="settings-note">History is stored locally in this browser and is not uploaded with your documents.</p>
+            </div>
+        </section>
+        {% if view == "dashboard" %}
+        <section id="dashboard" class="workspace-section dashboard-page reveal" aria-labelledby="dashboard-title">
+            <div class="section-heading dashboard-heading">
+                <div>
+                    <span class="section-kicker">YOUR WORKSPACE · REAL USAGE</span>
+                    <h2 id="dashboard-title">Productivity dashboard</h2>
+                    <p>Processing, AI usage and study results collected by this local app.</p>
+                </div>
+                <span class="dashboard-updated"><i></i> Live local data</span>
+            </div>
+            <div class="dashboard-metric-grid">
+                <article class="dashboard-metric-card"><span class="dashboard-metric-icon metric-blue">▤</span><span class="dashboard-metric-label">Total documents processed</span><strong>{{ dashboard_data.documents_processed }}</strong><small>Documents analysed in this app</small></article>
+                <article class="dashboard-metric-card"><span class="dashboard-metric-icon metric-teal">◷</span><span class="dashboard-metric-label">Total reading time saved</span><strong>{{ dashboard_data.reading_minutes_saved }} <small>min</small></strong><small>Estimated at 200 words per minute</small></article>
+                <article class="dashboard-metric-card"><span class="dashboard-metric-icon metric-violet">↗</span><span class="dashboard-metric-label">Efficiency improvement</span><strong>{{ dashboard_data.efficiency_percent }}<small>%</small></strong><small>Estimated read time less processing time</small></article>
+                <article class="dashboard-metric-card"><span class="dashboard-metric-icon metric-cyan">⌗</span><span class="dashboard-metric-label">Total tokens used</span><strong>{{ "{:,}".format(dashboard_data.total_tokens) }}</strong><small>Reported by configured AI providers</small></article>
+                <article class="dashboard-metric-card"><span class="dashboard-metric-icon metric-gold">$</span><span class="dashboard-metric-label">Estimated API cost</span><strong>{% if dashboard_data.estimated_cost_usd is not none %}${{ "%.4f"|format(dashboard_data.estimated_cost_usd) }}{% else %}—{% endif %}</strong><small>{% if dashboard_data.estimated_cost_usd is not none %}Based on configured per-model rates{% elif dashboard_data.total_tokens %}Set model rates in AI_MODEL_PRICING_JSON{% else %}Available after AI usage is recorded{% endif %}</small></article>
+                <article class="dashboard-metric-card"><span class="dashboard-metric-icon metric-rose">⌛</span><span class="dashboard-metric-label">Average processing time</span><strong>{% if dashboard_data.average_processing_seconds is not none %}{{ dashboard_data.average_processing_seconds }} <small>sec</small>{% else %}—{% endif %}</strong><small>Average document analysis duration</small></article>
+                <article class="dashboard-metric-card"><span class="dashboard-metric-icon metric-indigo">✓</span><span class="dashboard-metric-label">Total quizzes attempted</span><strong>{{ dashboard_data.quizzes_attempted }}</strong><small>Submitted timed quizzes</small></article>
+                <article class="dashboard-metric-card"><span class="dashboard-metric-icon metric-green">◎</span><span class="dashboard-metric-label">Average quiz score</span><strong>{% if dashboard_data.average_quiz_score is not none %}{{ dashboard_data.average_quiz_score }}<small>%</small>{% else %}—{% endif %}</strong><small>Across completed quizzes</small></article>
+                <article class="dashboard-metric-card dashboard-productivity-card"><span class="dashboard-metric-icon metric-purple">✦</span><span class="dashboard-metric-label">Overall productivity score</span><strong>{{ dashboard_data.productivity_percent }}<small>%</small></strong><small>Based on observed efficiency and quiz results</small></article>
+            </div>
+            <div class="dashboard-ring-grid" aria-label="Performance indicators">
+                {% for label, value, caption in [("Efficiency", dashboard_data.efficiency_percent, "Reading time saved"), ("Quiz average", dashboard_data.average_quiz_score or 0, "Correct answers"), ("Productivity", dashboard_data.productivity_percent, "Combined score")] %}
+                <article class="dashboard-ring-card">
+                    <div class="dashboard-ring" role="img" aria-label="{{ label }} {{ value }} percent">
+                        <svg viewBox="0 0 100 100" aria-hidden="true"><circle class="ring-track" cx="50" cy="50" r="45"/><circle class="ring-value" cx="50" cy="50" r="45" style="--ring-offset: {{ 283 - (283 * value / 100) }}"/></svg>
+                        <strong>{{ value|round|int }}<small>%</small></strong>
+                    </div>
+                    <span><strong>{{ label }}</strong><small>{{ caption }}</small></span>
+                </article>
+                {% endfor %}
+            </div>
+            <div class="dashboard-chart-grid">
+                <article class="panel dashboard-chart-panel">
+                    <div class="dashboard-chart-heading"><div><span class="section-kicker">LAST 7 DAYS</span><h3>Workspace activity</h3></div><div class="dashboard-legend"><span><i class="legend-documents"></i>Documents</span><span><i class="legend-quizzes"></i>Quizzes</span></div></div>
+                    {% set max_documents = dashboard_data.daily_activity|map(attribute="documents")|max %}
+                    {% set max_quizzes = dashboard_data.daily_activity|map(attribute="quizzes")|max %}
+                    <div class="dashboard-activity-chart" role="img" aria-label="Documents processed and quizzes completed during the last seven days">
+                        {% for day in dashboard_data.daily_activity %}
+                        <div class="activity-day" aria-label="{{ day.date }}: {{ day.documents }} documents, {{ day.quizzes }} quizzes">
+                            <div class="activity-bars"><span class="activity-bar bar-documents" style="--bar-height: {{ (day.documents / max_documents * 100) if max_documents else 0 }}%"><i>{{ day.documents }}</i></span><span class="activity-bar bar-quizzes" style="--bar-height: {{ (day.quizzes / max_quizzes * 100) if max_quizzes else 0 }}%"><i>{{ day.quizzes }}</i></span></div>
+                            <small>{{ day.label }}</small>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </article>
+                <article class="panel dashboard-chart-panel">
+                    <div class="dashboard-chart-heading"><div><span class="section-kicker">QUIZ RESULTS</span><h3>Topic performance</h3></div><span class="dashboard-chart-note">Correct answers by topic</span></div>
+                    {% if dashboard_data.topic_results %}
+                    <div class="dashboard-topic-chart">
+                        {% for topic in dashboard_data.topic_results %}
+                        <div class="topic-result-row"><div><strong>{{ topic.topic }}</strong><span>{{ topic.correct }} / {{ topic.total }} correct</span></div><div class="topic-result-track"><span style="--topic-score: {{ topic.percentage }}%"></span></div><b>{{ topic.percentage }}%</b></div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="dashboard-chart-empty"><span>◎</span><strong>No quiz results yet</strong><p>Submit a live quiz to see topic-wise performance here.</p></div>
+                    {% endif %}
+                </article>
+            </div>
+            {% if dashboard_data.documents_processed == 0 and dashboard_data.quizzes_attempted == 0 %}
+            <p class="dashboard-data-note">Your dashboard will fill in as you analyse documents and submit quizzes. No sample or placeholder activity is shown.</p>
+            {% endif %}
+        </section>
+        {% endif %}
+    </main>
+
+    <section id="ask-ai-page" class="workspace-section ask-page" hidden aria-labelledby="ask-page-title">
+        <div class="section-heading section-heading-centered">
+            <div><span class="section-kicker">DOCUMENT-GROUNDED CHAT</span><h2 id="ask-page-title">Ask AI</h2><p>Ask questions and get answers based only on your uploaded document.</p></div>
+        </div>
+        <div class="chat-dialog chat-page-panel" aria-describedby="chat-description">
+            <header class="chat-dialog-header">
+                <div>
+                    <span class="section-kicker">DOCUMENT-GROUNDED CHAT</span>
+                    <h2 id="chat-title">Ask AI</h2>
+                    <p id="chat-description">Answers are based only on your uploaded document.</p>
+                </div>
+            </header>
+            <div id="chat-document-status" class="chat-document-status" role="status"></div>
+            <button id="chat-upload-link" type="button" class="button button-outline chat-upload-link" hidden>Upload a document to get started</button>
+            <div id="chat-messages" class="chat-thread chat-modal-thread" aria-live="polite" aria-relevant="additions text">
+                <div class="chat-message chat-assistant"><span class="chat-avatar">AI</span><div class="chat-bubble"><small>DOCUMIND ASSISTANT</small><p>Ask me anything about the uploaded document.</p></div></div>
+            </div>
+            <div class="suggested-questions">
+                <span>TRY ASKING</span>
+                <button type="button" class="suggestion-chip">What is the main topic?</button>
+                <button type="button" class="suggestion-chip">What are the key points?</button>
+                <button type="button" class="suggestion-chip">What is the conclusion?</button>
+            </div>
+            <form id="ask-form" class="chat-form" method="POST" action="{{ url_for('ask') }}">
+                <label class="sr-only" for="chat-question">Ask a question about the document</label>
+                <textarea id="chat-question" name="question" rows="2" maxlength="1000" placeholder="Ask anything about your document..." required></textarea>
+                <button type="submit" class="send-button" aria-label="Send question" title="Send question"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 4 17 8-17 8 3-8-3-8Z"/><path d="M7 12h14"/></svg></button>
+            </form>
+            <div id="chat-loading" class="chat-loading" role="status" hidden><span class="processing-orb"></span><span>Thinking through your document...</span><span class="typing-dots"><i></i><i></i><i></i></span></div>
+        </div>
+    </section>
+
+    <footer class="footer"><a class="brand footer-brand" href="{{ url_for('index') }}"><span class="brand-mark"><svg viewBox="0 0 24 24"><path d="M7 3.75h7l4 4v12.5H7a2 2 0 0 1-2-2v-12.5a2 2 0 0 1 2-2Z"/><path d="M14 3.75v4h4M8.5 12h7"/></svg></span><span class="brand-copy">Docu<span>Mind</span><small>DOCUMENT INTELLIGENCE</small></span></a><span>AI-powered clarity for every document.</span><a href="{{ url_for('index') }}">Back to Home</a></footer>
+    </div>
+
+    <script>
+        (() => {
+            const root = document.documentElement;
+            const themeButton = document.getElementById("theme-toggle");
+            const themeMeta = document.querySelector('meta[name="theme-color"]');
+            const setTheme = (theme) => {
+                root.dataset.theme = theme;
+                themeButton.setAttribute("aria-label", theme === "dark" ? "Switch to light mode" : "Switch to dark mode");
+                themeMeta.content = theme === "dark" ? "#0b1220" : "#f4f7fb";
+                document.getElementById("theme-toggle-label").textContent =
+                    theme === "dark" ? "Light mode" : "Dark mode";
+                try { sessionStorage.setItem("document-ai-theme", theme); } catch (_error) {}
+            };
+            setTheme(root.dataset.theme || "light");
+            themeButton.addEventListener("click", () => setTheme(root.dataset.theme === "dark" ? "light" : "dark"));
+
+            const revealObserver = "IntersectionObserver" in window
+                ? new IntersectionObserver((entries, observer) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add("is-visible");
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.08 })
+                : null;
+            document.querySelectorAll(".reveal").forEach((element) => {
+                if (revealObserver) revealObserver.observe(element);
+                else element.classList.add("is-visible");
+            });
+
+            const showToast = (message, category = "success") => {
+                const region = document.getElementById("toast-region");
+                const toast = document.createElement("div");
+                toast.className = `toast toast-${category}`;
+                toast.setAttribute("role", "status");
+                toast.innerHTML = `<span class="toast-icon" aria-hidden="true">${category === "error" ? "×" : "✓"}</span><span></span><button class="toast-close" type="button" aria-label="Dismiss notification">×</button>`;
+                toast.querySelector("span:nth-child(2)").textContent = message;
+                region.appendChild(toast);
+                window.setTimeout(() => toast.remove(), 3600);
+            };
+
+            const sidebar = document.getElementById("app-sidebar");
+            const mobileMenuToggle = document.getElementById("mobile-menu-toggle");
+            const sidebarBackdrop = document.getElementById("sidebar-backdrop");
+            const collapseToggle = document.getElementById("sidebar-collapse-toggle");
+            const setSidebarOpen = (isOpen) => {
+                document.body.classList.toggle("sidebar-open", isOpen);
+                mobileMenuToggle.setAttribute("aria-expanded", String(isOpen));
+                mobileMenuToggle.setAttribute(
+                    "aria-label",
+                    isOpen ? "Close navigation menu" : "Open navigation menu",
+                );
+            };
+            const setSidebarCollapsed = (isCollapsed) => {
+                document.body.classList.toggle("sidebar-collapsed", isCollapsed);
+                collapseToggle.setAttribute("aria-expanded", String(!isCollapsed));
+                collapseToggle.setAttribute(
+                    "aria-label",
+                    isCollapsed ? "Expand sidebar" : "Collapse sidebar",
+                );
+                collapseToggle.title = isCollapsed ? "Expand sidebar" : "Collapse sidebar";
+                try {
+                    sessionStorage.setItem(
+                        "document-ai-sidebar",
+                        isCollapsed ? "collapsed" : "expanded",
+                    );
+                } catch (_error) {}
+            };
+            try {
+                setSidebarCollapsed(
+                    sessionStorage.getItem("document-ai-sidebar") === "collapsed",
+                );
+            } catch (_error) {
+                setSidebarCollapsed(false);
+            }
+            collapseToggle.addEventListener("click", () => {
+                setSidebarCollapsed(!document.body.classList.contains("sidebar-collapsed"));
+            });
+            mobileMenuToggle.addEventListener("click", () => {
+                setSidebarOpen(!document.body.classList.contains("sidebar-open"));
+            });
+            sidebarBackdrop.addEventListener("click", () => setSidebarOpen(false));
+
+            const sidebarLinks = Array.from(
+                sidebar.querySelectorAll(".sidebar-link[data-nav-target]"),
+            );
+            const applyWorkspaceView = (view) => {
+                const home = view === "home";
+                const hasResult = Boolean(document.querySelector("#result-mount #summary"));
+                const resultViews = new Set(["analyzer", "summary", "listen", "mind-map", "study-mode"]);
+                const pageNeedsDocument = new Set(["summary", "listen", "mind-map", "study-mode"]);
+                const pageParts = document.querySelectorAll("[data-result-page]");
+
+                document.body.dataset.page = view;
+                document.querySelector(".hero").hidden = !home;
+                document.querySelector(".capability-strip").hidden = !home;
+                const uploadViews = new Set(["analyzer", "summary", "listen", "mind-map", "study-mode"]);
+                document.getElementById("upload").hidden = !home && !(!hasResult && uploadViews.has(view));
+                pageParts.forEach((part) => {
+                    part.hidden = !home && part.dataset.resultPage !== view;
+                });
+
+                const featureGrid = document.querySelector(".feature-grid");
+                if (featureGrid) {
+                    featureGrid.hidden = !home && !Array.from(featureGrid.children).some((child) => !child.hidden);
+                }
+
+                document.getElementById("result-mount").hidden = !home && (
+                    !hasResult || !resultViews.has(view)
+                );
+                document.getElementById("page-empty-state").hidden = !(
+                    !home && !hasResult && pageNeedsDocument.has(view)
+                );
+                document.getElementById("comparison").hidden = !home && view !== "comparison";
+                const dashboard = document.getElementById("dashboard");
+                if (dashboard) dashboard.hidden = view !== "dashboard";
+                document.getElementById("history").hidden = !home && view !== "history";
+                document.getElementById("settings").hidden = !home && view !== "settings";
+                document.getElementById("ask-ai-page").hidden = view !== "ask-ai";
+                setActiveNavigation(view);
+            };
+            const setActiveNavigation = (targetId) => {
+                sidebarLinks.forEach((link) => {
+                    const isActive = link.dataset.navTarget === targetId;
+                    link.classList.toggle("is-active", isActive);
+                    if (isActive) link.setAttribute("aria-current", "page");
+                    else link.removeAttribute("aria-current");
+                });
+            };
+            sidebarLinks.forEach((link) => {
+                link.addEventListener("click", () => {
+                    setActiveNavigation(link.dataset.navTarget);
+                    setSidebarOpen(false);
+                });
+            });
+            document.querySelectorAll("[data-nav-target]:not(.sidebar-link)").forEach((link) => {
+                link.addEventListener("click", () => {
+                    setActiveNavigation(link.dataset.navTarget);
+                    setSidebarOpen(false);
+                });
+            });
+            applyWorkspaceView(document.body.dataset.page || "home");
+
+            const historyKey = "document-ai-history";
+            const historyList = document.getElementById("history-list");
+            const historyEmpty = document.getElementById("history-empty");
+            const historyDate = (value) => {
+                const date = new Date(value);
+                return Number.isNaN(date.getTime())
+                    ? "Date unavailable"
+                    : new Intl.DateTimeFormat(undefined, {
+                        dateStyle: "medium",
+                        timeStyle: "short",
+                    }).format(date);
+            };
+            const loadHistory = () => {
+                try {
+                    const stored = localStorage.getItem(historyKey);
+                    const records = stored ? JSON.parse(stored) : [];
+                    if (!Array.isArray(records)) throw new Error("History data is not a list.");
+                    return records.filter((record) => (
+                        record
+                        && typeof record.id === "string"
+                        && typeof record.filename === "string"
+                        && typeof record.summary === "string"
+                        && typeof record.created_at === "string"
+                    )).slice(0, 12);
+                } catch (error) {
+                    console.error("Could not read document history.", error);
+                    showToast("Document history could not be read from this browser.", "error");
+                    return [];
+                }
+            };
+            const renderHistory = (records = loadHistory()) => {
+                historyList.replaceChildren();
+                historyEmpty.hidden = records.length > 0;
+                records.forEach((record) => {
+                    const item = document.createElement("li");
+                    const details = document.createElement("details");
+                    details.className = "history-entry";
+                    const heading = document.createElement("summary");
+                    const title = document.createElement("span");
+                    title.className = "history-entry-title";
+                    const filename = document.createElement("strong");
+                    filename.textContent = record.filename;
+                    const created = document.createElement("small");
+                    created.textContent = historyDate(record.created_at);
+                    title.append(filename, created);
+                    const wordCount = document.createElement("span");
+                    wordCount.className = "history-word-count";
+                    wordCount.textContent = `${Number(record.word_count) || 0} words`;
+                    heading.append(title, wordCount);
+                    const summary = document.createElement("p");
+                    summary.textContent = record.summary;
+                    const language = document.createElement("small");
+                    language.className = "history-language";
+                    language.textContent = `Summary language: ${record.language}`;
+                    details.append(heading, summary, language);
+                    item.append(details);
+                    historyList.append(item);
+                });
+            };
+            renderHistory();
+            const historyDataElement = document.getElementById("history-entry-data");
+            if (historyDataElement) {
+                try {
+                    const record = JSON.parse(historyDataElement.textContent);
+                    const records = loadHistory().filter((entry) => entry.id !== record.id);
+                    records.unshift({ ...record, created_at: new Date().toISOString() });
+                    const recentRecords = records.slice(0, 12);
+                    localStorage.setItem(historyKey, JSON.stringify(recentRecords));
+                    renderHistory(recentRecords);
+                } catch (error) {
+                    console.error("Could not save document history.", error);
+                    showToast("This summary could not be saved to browser history.", "error");
+                }
+            }
+            document.getElementById("clear-history").addEventListener("click", () => {
+                try {
+                    localStorage.removeItem(historyKey);
+                    renderHistory([]);
+                    showToast("Document history cleared.");
+                } catch (error) {
+                    console.error("Could not clear document history.", error);
+                    showToast("Document history could not be cleared.", "error");
+                }
+            });
+
+            document.querySelectorAll(".toast-close").forEach((button) => {
+                button.addEventListener("click", () => button.closest(".toast").remove());
+            });
+            document.querySelectorAll(".toast").forEach((toast) => {
+                window.setTimeout(() => toast.remove(), 6000);
+            });
+
+            const fileInput = document.getElementById("document");
+            const dropZone = document.getElementById("drop-zone");
+            const preview = document.getElementById("file-preview");
+            const fileName = document.getElementById("file-name");
+            const fileSize = document.getElementById("file-size");
+            const fileTypeIcon = document.getElementById("file-type-icon");
+            const removeFile = document.getElementById("remove-file");
+            const formatSelect = document.getElementById("summary-format");
+            const customOptions = document.getElementById("custom-length-options");
+            const languageSelect = document.getElementById("language");
+            const customLanguage = document.getElementById("custom-language");
+
+            const formatBytes = (bytes) => {
+                if (bytes < 1024) return `${bytes} B`;
+                if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+                return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+            };
+            const updatePreview = (file) => {
+                if (!file) {
+                    preview.hidden = true;
+                    dropZone.hidden = false;
+                    return;
+                }
+                const extension = file.name.split(".").pop().toUpperCase();
+                fileTypeIcon.textContent = extension === "DOCX" ? "DOC" : extension;
+                fileName.textContent = file.name;
+                fileSize.textContent = `${formatBytes(file.size)} · Ready to analyse`;
+                dropZone.hidden = true;
+                preview.hidden = false;
+            };
+            fileInput.addEventListener("change", () => updatePreview(fileInput.files[0]));
+            removeFile.addEventListener("click", () => {
+                fileInput.value = "";
+                updatePreview(null);
+                fileInput.focus();
+            });
+            dropZone.addEventListener("keydown", (event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    fileInput.click();
+                }
+            });
+            ["dragenter", "dragover"].forEach((eventName) => {
+                dropZone.addEventListener(eventName, (event) => {
+                    event.preventDefault();
+                    dropZone.classList.add("is-dragging");
+                });
+            });
+            ["dragleave", "drop"].forEach((eventName) => {
+                dropZone.addEventListener(eventName, (event) => {
+                    event.preventDefault();
+                    dropZone.classList.remove("is-dragging");
+                });
+            });
+            dropZone.addEventListener("drop", (event) => {
+                const [file] = event.dataTransfer.files;
+                if (file) {
+                    const transfer = new DataTransfer();
+                    transfer.items.add(file);
+                    fileInput.files = transfer.files;
+                    fileInput.dispatchEvent(new Event("change", { bubbles: true }));
+                }
+            });
+            formatSelect.addEventListener("change", () => {
+                customOptions.hidden = formatSelect.value !== "custom";
+            });
+            customLanguage.required = languageSelect.value === "other";
+            languageSelect.addEventListener("change", () => {
+                customLanguage.hidden = languageSelect.value !== "other";
+                customLanguage.required = languageSelect.value === "other";
+                if (languageSelect.value === "other") customLanguage.focus();
+            });
+
+            const uploadForm = document.getElementById("upload-form");
+            uploadForm.addEventListener("submit", async (event) => {
+                event.preventDefault();
+                const submitButton = document.getElementById("submit-btn");
+                const submitLabel = document.getElementById("submit-btn-label");
+                submitButton.disabled = true;
+                submitButton.setAttribute("aria-busy", "true");
+                submitLabel.textContent = "Analysing…";
+                const processing = document.getElementById("processing-panel");
+                const processingStatus = document.getElementById("processing-status");
+                processing.hidden = false;
+                const startedAt = Date.now();
+                const timeoutMs = 180000;
+                const controller = new AbortController();
+                const updateStatus = () => {
+                    const elapsedSeconds = Math.floor((Date.now() - startedAt) / 1000);
+                    processingStatus.textContent = elapsedSeconds < 10
+                        ? "Uploading and analysing your document…"
+                        : `Analysis is still in progress · ${elapsedSeconds}s elapsed`;
+                };
+                const statusTimer = window.setInterval(updateStatus, 1000);
+                const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs);
+                try {
+                    const response = await fetch(uploadForm.action, {
+                        method: "POST",
+                        body: new FormData(uploadForm),
+                        headers: { "X-Requested-With": "XMLHttpRequest" },
+                        signal: controller.signal,
+                    });
+                    const responseDocument = new DOMParser().parseFromString(
+                        await response.text(),
+                        "text/html",
+                    );
+                    const nextMount = responseDocument.getElementById("result-mount");
+                    const currentMount = document.getElementById("result-mount");
+                    const toastRegion = document.getElementById("toast-region");
+                    const nextToasts = responseDocument.getElementById("toast-region");
+
+                    if (nextMount && nextMount.querySelector("#summary")) {
+                        currentMount.innerHTML = nextMount.innerHTML;
+                        window.history.pushState(
+                            {},
+                            "",
+                            responseDocument.body.dataset.summaryPage,
+                        );
+                        applyWorkspaceView("summary");
+                        syncChatDocument();
+                        currentMount.querySelector("#summary").classList.add("is-visible");
+                        initializeResultFeatures(currentMount);
+                        currentMount.querySelector("#summary").scrollIntoView({
+                            behavior: "smooth",
+                            block: "start",
+                        });
+                    } else if (nextToasts && nextToasts.children.length) {
+                        toastRegion.replaceChildren(...nextToasts.cloneNode(true).childNodes);
+                        toastRegion.querySelectorAll(".toast-close").forEach((button) => {
+                            button.addEventListener("click", () => button.closest(".toast").remove());
+                        });
+                    } else if (!response.ok) {
+                        showToast(
+                            response.status === 413
+                                ? "The document is too large. Please upload a file no larger than 10 MB."
+                                : `Analysis failed (server error ${response.status}). Please try again.`,
+                            "error",
+                        );
+                    } else {
+                        showToast(
+                            "The server returned no analysis results. Try again with a smaller or text-based document.",
+                            "error",
+                        );
+                    }
+                } catch (error) {
+                    if (error.name === "AbortError") {
+                        showToast(
+                            "Analysis timed out after 3 minutes. Try a smaller document, then analyse it again.",
+                            "error",
+                        );
+                    } else {
+                        console.error("Document analysis request failed.", error);
+                        showToast("Could not reach the app or complete the analysis. Check the server connection and try again.", "error");
+                    }
+                } finally {
+                    window.clearTimeout(timeoutId);
+                    window.clearInterval(statusTimer);
+                    processing.hidden = true;
+                    submitButton.disabled = false;
+                    submitButton.removeAttribute("aria-busy");
+                    submitLabel.textContent = "Analyse Document";
+                }
+            });
+
+            const compareForm = document.getElementById("compare-form");
+            const compareButton = document.getElementById("compare-btn");
+            compareForm.addEventListener("submit", () => {
+                try { sessionStorage.setItem("document-ai-scroll-target", "comparison"); } catch (_error) {}
+                compareButton.disabled = true;
+                document.getElementById("compare-loading").hidden = false;
+            });
+            [["document-a", "drop-zone-a", "document-a-selected"], ["document-b", "drop-zone-b", "document-b-selected"]].forEach(([inputId, zoneId, labelId]) => {
+                const input = document.getElementById(inputId);
+                const zone = document.getElementById(zoneId);
+                const label = document.getElementById(labelId);
+                input.addEventListener("change", () => {
+                    const file = input.files[0];
+                    label.textContent = file ? `${file.name} · ${formatBytes(file.size)}` : "";
+                    zone.classList.toggle("has-file", Boolean(file));
+                });
+                ["dragenter", "dragover"].forEach((name) => zone.addEventListener(name, (event) => {
+                    event.preventDefault();
+                    zone.classList.add("is-dragging");
+                }));
+                ["dragleave", "drop"].forEach((name) => zone.addEventListener(name, (event) => {
+                    event.preventDefault();
+                    zone.classList.remove("is-dragging");
+                }));
+                zone.addEventListener("drop", (event) => {
+                    const [file] = event.dataTransfer.files;
+                    if (file) {
+                        const transfer = new DataTransfer();
+                        transfer.items.add(file);
+                        input.files = transfer.files;
+                        input.dispatchEvent(new Event("change", { bubbles: true }));
+                    }
+                });
+            });
+
+            const initializeResultFeatures = (root = document) => {
+                const copyButton = root.querySelector("#copy-summary");
+                if (copyButton) {
+                    copyButton.addEventListener("click", async () => {
+                        try {
+                            await navigator.clipboard.writeText(root.querySelector(".summary-prose").textContent);
+                            showToast("Summary copied to clipboard");
+                        } catch (_error) {
+                            const textArea = document.createElement("textarea");
+                            textArea.value = root.querySelector(".summary-prose").textContent;
+                            textArea.style.position = "fixed";
+                            textArea.style.opacity = "0";
+                            document.body.appendChild(textArea);
+                            textArea.select();
+                            const copied = document.execCommand("copy");
+                            textArea.remove();
+                            showToast(copied ? "Summary copied to clipboard" : "Select and copy the summary manually");
+                        }
+                    });
+                }
+                root.querySelector("#download-form")?.addEventListener("submit", () => showToast("Your summary download is starting"));
+
+                const flashcardData = root.querySelector("#flashcard-data");
+                if (flashcardData) {
+                    const points = JSON.parse(flashcardData.textContent);
+                    const count = root.querySelector("#flashcard-count");
+                    const prompt = root.querySelector("#flashcard-prompt");
+                    const answer = root.querySelector("#flashcard-answer");
+                    const toggle = root.querySelector("#flashcard-toggle");
+                    const next = root.querySelector("#flashcard-next");
+                    const card = root.querySelector("#flashcard-card");
+                    const front = card.querySelector(".flashcard-front");
+                    const back = card.querySelector(".flashcard-back");
+                    let cardIndex = 0;
+                    const showFlashcard = () => {
+                        count.textContent = `CARD ${cardIndex + 1} OF ${points.length}`;
+                        prompt.textContent = `KEY TAKEAWAY ${cardIndex + 1} · TRY TO RECALL`;
+                        answer.textContent = points[cardIndex];
+                        card.classList.remove("is-flipped");
+                        front.setAttribute("aria-hidden", "false");
+                        back.setAttribute("aria-hidden", "true");
+                        toggle.textContent = "Reveal key point";
+                    };
+                    toggle.addEventListener("click", () => {
+                        const isFlipped = card.classList.toggle("is-flipped");
+                        front.setAttribute("aria-hidden", String(isFlipped));
+                        back.setAttribute("aria-hidden", String(!isFlipped));
+                        toggle.textContent = isFlipped ? "Hide key point" : "Reveal key point";
+                    });
+                    next.addEventListener("click", () => {
+                        cardIndex = (cardIndex + 1) % points.length;
+                        showFlashcard();
+                    });
+                    showFlashcard();
+                }
+
+                const mcqStudio = root.querySelector("#mcq-studio");
+                if (mcqStudio) {
+                    const quizDataElement = mcqStudio.querySelector("#mcq-data");
+                    const resultDataElement = mcqStudio.querySelector("#mcq-result-data");
+                    const emptyState = mcqStudio.querySelector("#mcq-empty");
+                    const questionWrap = mcqStudio.querySelector("#mcq-question-wrap");
+                    const resultsPanel = mcqStudio.querySelector("#mcq-results");
+                    const generateButton = mcqStudio.querySelector("#mcq-generate");
+                    const generationStatus = mcqStudio.querySelector("#mcq-generation-status");
+                    const questionElement = mcqStudio.querySelector("#mcq-question");
+                    const optionsElement = mcqStudio.querySelector("#mcq-options");
+                    const progressLabel = mcqStudio.querySelector("#mcq-progress-label");
+                    const progressBar = mcqStudio.querySelector("#mcq-progress-bar");
+                    const timerLabel = mcqStudio.querySelector("#mcq-timer");
+                    const previousButton = mcqStudio.querySelector("#mcq-previous");
+                    const nextButton = mcqStudio.querySelector("#mcq-next");
+                    const submitButton = mcqStudio.querySelector("#mcq-submit");
+                    let quiz = JSON.parse(quizDataElement.textContent || "null");
+                    let savedResult = JSON.parse(resultDataElement.textContent || "null");
+                    let answers = [];
+                    let currentQuestion = 0;
+                    let secondsRemaining = 600;
+                    let timerId = null;
+                    let submitting = false;
+                    let submitted = false;
+
+                    const validQuiz = (candidate) => candidate
+                        && typeof candidate.id === "string"
+                        && Array.isArray(candidate.questions)
+                        && candidate.questions.length > 0
+                        && candidate.questions.every((item) => (
+                            item
+                            && typeof item.question === "string"
+                            && Array.isArray(item.options)
+                            && item.options.length === 4
+                            && Number.isInteger(item.correct_answer)
+                            && item.correct_answer >= 0
+                            && item.correct_answer < 4
+                            && typeof item.explanation === "string"
+                            && typeof item.topic === "string"
+                        ));
+                    const formatTime = (seconds) =>
+                        `${Math.floor(seconds / 60).toString().padStart(2, "0")}:${(seconds % 60).toString().padStart(2, "0")}`;
+                    const stopTimer = () => {
+                        if (timerId !== null) window.clearInterval(timerId);
+                        timerId = null;
+                    };
+                    const startTimer = () => {
+                        if (timerId !== null || submitted || !validQuiz(quiz)) return;
+                        timerId = window.setInterval(() => {
+                            secondsRemaining = Math.max(0, secondsRemaining - 1);
+                            timerLabel.textContent = formatTime(secondsRemaining);
+                            timerLabel.classList.toggle("is-urgent", secondsRemaining <= 60);
+                            if (secondsRemaining === 0) {
+                                stopTimer();
+                                submitQuiz();
+                            }
+                        }, 1000);
+                    };
+                    const renderQuestion = () => {
+                        if (!validQuiz(quiz)) return;
+                        const question = quiz.questions[currentQuestion];
+                        progressLabel.textContent = `QUESTION ${currentQuestion + 1} OF ${quiz.questions.length} · ${question.topic}`;
+                        progressBar.style.width = `${((currentQuestion + 1) / quiz.questions.length) * 100}%`;
+                        questionElement.textContent = question.question;
+                        optionsElement.replaceChildren();
+                        question.options.forEach((option, index) => {
+                            const button = document.createElement("button");
+                            button.type = "button";
+                            button.className = "mcq-option";
+                            button.setAttribute("aria-pressed", String(answers[currentQuestion] === index));
+                            button.disabled = submitted;
+                            const letter = document.createElement("span");
+                            letter.className = "mcq-option-letter";
+                            letter.textContent = String.fromCharCode(65 + index);
+                            const label = document.createElement("span");
+                            label.textContent = option;
+                            button.append(letter, label);
+                            button.addEventListener("click", () => {
+                                if (submitted) return;
+                                answers[currentQuestion] = index;
+                                renderQuestion();
+                            });
+                            optionsElement.append(button);
+                        });
+                        previousButton.disabled = currentQuestion === 0 || submitted;
+                        nextButton.disabled = currentQuestion === quiz.questions.length - 1 || submitted;
+                    };
+                    const renderResults = (result) => {
+                        if (!result || !validQuiz(quiz)) return;
+                        submitted = true;
+                        stopTimer();
+                        questionWrap.hidden = true;
+                        emptyState.hidden = true;
+                        resultsPanel.hidden = false;
+                        mcqStudio.querySelector("#mcq-score-total").textContent =
+                            `${result.correct} / ${result.total}`;
+                        mcqStudio.querySelector("#mcq-score-correct").textContent = result.correct;
+                        mcqStudio.querySelector("#mcq-score-wrong").textContent = result.wrong;
+                        mcqStudio.querySelector("#mcq-score-percent").textContent =
+                            `${result.percentage}%`;
+
+                        const topicList = mcqStudio.querySelector("#mcq-topic-list");
+                        topicList.replaceChildren();
+                        (result.topics || []).forEach((topic) => {
+                            const row = document.createElement("div");
+                            row.className = "mcq-topic-row";
+                            const label = document.createElement("span");
+                            label.textContent = topic.topic;
+                            const score = document.createElement("strong");
+                            score.textContent = `${topic.correct} / ${topic.total} · ${topic.percentage}%`;
+                            const track = document.createElement("span");
+                            track.className = "topic-result-track";
+                            const fill = document.createElement("span");
+                            fill.style.setProperty("--topic-score", `${topic.percentage}%`);
+                            track.append(fill);
+                            row.append(label, score, track);
+                            topicList.append(row);
+                        });
+
+                        const reviewList = mcqStudio.querySelector("#mcq-review-list");
+                        reviewList.replaceChildren();
+                        quiz.questions.forEach((question, index) => {
+                            const chosen = result.answers?.[index];
+                            const item = document.createElement("li");
+                            item.className = chosen === question.correct_answer
+                                ? "mcq-review-correct"
+                                : "mcq-review-wrong";
+                            const heading = document.createElement("strong");
+                            heading.textContent = `${index + 1}. ${question.question}`;
+                            const answer = document.createElement("p");
+                            answer.textContent = `Your answer: ${Number.isInteger(chosen) ? question.options[chosen] : "Not answered"} · Correct answer: ${question.options[question.correct_answer]}`;
+                            const explanation = document.createElement("p");
+                            explanation.textContent = question.explanation;
+                            item.append(heading, answer, explanation);
+                            reviewList.append(item);
+                        });
+                        generateButton.textContent = "Regenerate Questions";
+                    };
+                    const submitQuiz = async () => {
+                        if (submitting || submitted || !validQuiz(quiz)) return;
+                        submitting = true;
+                        stopTimer();
+                        submitButton.disabled = true;
+                        try {
+                            const response = await fetch(mcqStudio.dataset.resultsEndpoint, {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({
+                                    document_id: mcqStudio.dataset.documentId,
+                                    quiz_id: quiz.id,
+                                    answers,
+                                }),
+                            });
+                            const body = await response.json();
+                            if (!response.ok || !body.result) {
+                                throw new Error(body.error || `Could not save quiz results (HTTP ${response.status}).`);
+                            }
+                            savedResult = body.result;
+                            resultDataElement.textContent = JSON.stringify(savedResult);
+                            renderResults(savedResult);
+                        } catch (error) {
+                            console.error("Quiz submission failed.", error);
+                            showToast(error.message || "The quiz result could not be saved. Please try again.", "error");
+                            startTimer();
+                            submitButton.disabled = false;
+                        } finally {
+                            submitting = false;
+                        }
+                    };
+                    const beginQuiz = (nextQuiz) => {
+                        quiz = nextQuiz;
+                        savedResult = null;
+                        answers = Array(quiz.questions.length).fill(null);
+                        currentQuestion = 0;
+                        secondsRemaining = 600;
+                        submitted = false;
+                        resultDataElement.textContent = "null";
+                        questionWrap.hidden = false;
+                        emptyState.hidden = true;
+                        resultsPanel.hidden = true;
+                        timerLabel.textContent = formatTime(secondsRemaining);
+                        timerLabel.classList.remove("is-urgent");
+                        submitButton.disabled = false;
+                        generateButton.textContent = "Regenerate Questions";
+                        quizDataElement.textContent = JSON.stringify(quiz);
+                        renderQuestion();
+                        startTimer();
+                    };
+
+                    previousButton.addEventListener("click", () => {
+                        if (currentQuestion > 0 && !submitted) {
+                            currentQuestion -= 1;
+                            renderQuestion();
+                        }
+                    });
+                    nextButton.addEventListener("click", () => {
+                        if (currentQuestion < quiz.questions.length - 1 && !submitted) {
+                            currentQuestion += 1;
+                            renderQuestion();
+                        }
+                    });
+                    submitButton.addEventListener("click", submitQuiz);
+                    generateButton.addEventListener("click", async () => {
+                        if (generateButton.disabled) return;
+                        generateButton.disabled = true;
+                        generationStatus.hidden = false;
+                        try {
+                            const response = await fetch(mcqStudio.dataset.endpoint, {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ document_id: mcqStudio.dataset.documentId }),
+                            });
+                            const body = await response.json();
+                            if (!response.ok || !validQuiz(body.quiz)) {
+                                throw new Error(body.error || "The server returned an invalid quiz.");
+                            }
+                            beginQuiz(body.quiz);
+                            showToast("Your document-based quiz is ready");
+                        } catch (error) {
+                            console.error("MCQ generation failed.", error);
+                            showToast(error.message || "Could not generate quiz questions. Please try again.", "error");
+                        } finally {
+                            generateButton.disabled = false;
+                            generationStatus.hidden = true;
+                        }
+                    });
+
+                    if (validQuiz(quiz)) {
+                        if (savedResult) renderResults(savedResult);
+                        else beginQuiz(quiz);
+                    } else {
+                        questionWrap.hidden = true;
+                        resultsPanel.hidden = true;
+                        emptyState.hidden = false;
+                    }
+                }
+
+                root.querySelector("#exam-form")?.addEventListener("submit", async (event) => {
+                    event.preventDefault();
+                    const form = event.currentTarget;
+                    const button = form.querySelector("button[type='submit']");
+                    const label = form.querySelector(".study-generate-label");
+                    const panel = form.closest("#study-mode");
+                    const loading = panel.querySelector("#study-generation-status");
+                    const loadingMessage = panel.querySelector("#study-generation-message");
+                    if (button.disabled) return;
+
+                    button.disabled = true;
+                    button.setAttribute("aria-busy", "true");
+                    label.textContent = "Generating questions…";
+                    loading.hidden = false;
+                    const startedAt = Date.now();
+                    const updateStatus = () => {
+                        const seconds = Math.floor((Date.now() - startedAt) / 1000);
+                        loadingMessage.textContent = seconds < 10
+                            ? "Building a fresh question set from your document…"
+                            : `Still generating your questions · ${seconds}s elapsed`;
+                    };
+                    const statusTimer = window.setInterval(updateStatus, 1000);
+                    const controller = new AbortController();
+                    const timeoutId = window.setTimeout(() => controller.abort(), 180000);
+
+                    try {
+                        const response = await fetch(form.action, {
+                            method: "POST",
+                            body: new FormData(form),
+                            headers: { "X-Requested-With": "XMLHttpRequest" },
+                            signal: controller.signal,
+                        });
+                        const responseDocument = new DOMParser().parseFromString(
+                            await response.text(),
+                            "text/html",
+                        );
+                        const nextStudyMode = responseDocument.getElementById("study-mode");
+                        const nextQuizData = nextStudyMode?.querySelector("#quiz-data");
+                        let questions;
+                        try {
+                            questions = nextQuizData ? JSON.parse(nextQuizData.textContent) : null;
+                        } catch (error) {
+                            console.error("Study questions response was invalid.", error);
+                        }
+
+                        if (response.ok && questions
+                            && ["two_mark", "five_mark", "ten_mark"].every(
+                                (key) => Array.isArray(questions[key]) && questions[key].length === 3,
+                            )) {
+                            panel.replaceWith(nextStudyMode);
+                            initializeResultFeatures(nextStudyMode);
+                            nextStudyMode.scrollIntoView({ behavior: "smooth", block: "start" });
+                        } else {
+                            const serverMessage = responseDocument.querySelector("#toast-region .toast-error span:nth-child(2)")?.textContent.trim();
+                            showToast(
+                                serverMessage || `Could not generate study questions (HTTP ${response.status || "invalid response"}). Please try again.`,
+                                "error",
+                            );
+                        }
+                    } catch (error) {
+                        if (error.name === "AbortError") {
+                            showToast("Question generation timed out after 3 minutes. Try again, or use a shorter document.", "error");
+                        } else {
+                            console.error("Study question generation failed.", error);
+                            showToast("Could not reach the app while generating questions. Check the server connection and try again.", "error");
+                        }
+                    } finally {
+                        window.clearTimeout(timeoutId);
+                        window.clearInterval(statusTimer);
+                        if (form.isConnected) {
+                            button.disabled = false;
+                            button.removeAttribute("aria-busy");
+                            label.textContent = "Regenerate questions";
+                            loading.hidden = true;
+                        }
+                    }
+                });
+
+                const speech = window.speechSynthesis;
+                const playButton = root.querySelector("#voice-play");
+                if (playButton) {
+                    const pauseButton = root.querySelector("#voice-pause");
+                    const resumeButton = root.querySelector("#voice-resume");
+                    const stopButton = root.querySelector("#voice-stop");
+                    const voiceSelect = root.querySelector("#voice-select");
+                    const rateSelect = root.querySelector("#voice-rate");
+                    const status = root.querySelector("#voice-status");
+                    const indicator = root.querySelector("#voice-indicator");
+                    const unsupported = root.querySelector("#voice-unsupported");
+                    const transcript = root.querySelector("#voice-transcript");
+                    const speechData = root.querySelector("#listen-summary-data");
+                    const speechText = speechData
+                        ? JSON.parse(speechData.textContent).trim()
+                        : root.querySelector(".summary-prose").textContent.trim();
+                    const language = root.querySelector(".badge").textContent.split("·").pop().trim().toLowerCase();
+                    const languageTags = {
+                        english: "en", tamil: "ta", hindi: "hi", spanish: "es",
+                        french: "fr", german: "de", arabic: "ar", bengali: "bn",
+                        telugu: "te", marathi: "mr",
+                    };
+                    let availableVoices = [];
+                    const refreshVoices = () => {
+                        if (!speech) return;
+                        const languageTag = languageTags[language];
+                        const allVoices = speech.getVoices();
+                        availableVoices = languageTag
+                            ? allVoices.filter((voice) => voice.lang.toLowerCase().startsWith(languageTag))
+                            : allVoices;
+                        if (!availableVoices.length) availableVoices = allVoices;
+                        voiceSelect.replaceChildren(new Option("Default voice", ""));
+                        availableVoices.forEach((voice, index) => {
+                            voiceSelect.add(new Option(`${voice.name} (${voice.lang})`, String(index)));
+                        });
+                    };
+                    if (!speech || !("SpeechSynthesisUtterance" in window)) {
+                        playButton.disabled = true;
+                        pauseButton.disabled = true;
+                        resumeButton.disabled = true;
+                        stopButton.disabled = true;
+                        voiceSelect.disabled = true;
+                        rateSelect.disabled = true;
+                        unsupported.hidden = false;
+                        status.textContent = "Try a browser with built-in speech playback.";
+                    } else {
+                        refreshVoices();
+                        speech.addEventListener?.("voiceschanged", refreshVoices);
+                        const setPlaybackState = (state) => {
+                            const speaking = state === "speaking";
+                            const paused = state === "paused";
+                            indicator.classList.toggle("is-speaking", speaking);
+                            playButton.disabled = speaking || paused;
+                            pauseButton.disabled = !speaking;
+                            resumeButton.disabled = !paused;
+                            stopButton.disabled = !speaking && !paused;
+                        };
+                        const showSpeechProgress = (charIndex, charLength) => {
+                            const start = Math.max(0, Math.min(charIndex, speechText.length));
+                            let end = Math.max(start, Math.min(start + charLength, speechText.length));
+                            if (end <= start) {
+                                const nextWord = speechText.slice(start).match(/[\p{L}\p{N}'’-]+/u);
+                                end = nextWord ? start + nextWord[0].length : start;
+                            }
+                            if (end === start) return;
+                            const currentWord = document.createElement("mark");
+                            currentWord.className = "voice-current-word";
+                            currentWord.textContent = speechText.slice(start, end);
+                            transcript.replaceChildren(
+                                document.createTextNode(speechText.slice(0, start)),
+                                currentWord,
+                            );
+                            currentWord.scrollIntoView({ block: "nearest", behavior: "smooth" });
+                        };
+                        playButton.addEventListener("click", () => {
+                            speech.cancel();
+                            const utterance = new SpeechSynthesisUtterance(speechText);
+                            utterance.rate = Number(rateSelect.value);
+                            const chosenVoice = availableVoices[Number(voiceSelect.value)];
+                            if (voiceSelect.value && chosenVoice) utterance.voice = chosenVoice;
+                            else if (languageTags[language]) utterance.lang = `${languageTags[language]}-${languageTags[language] === "en" ? "US" : "IN"}`;
+                            utterance.onstart = () => {
+                                setPlaybackState("speaking");
+                                status.textContent = "Speaking summary…";
+                            };
+                            utterance.onboundary = (event) => {
+                                if (event.name === "word") {
+                                    showSpeechProgress(event.charIndex, event.charLength || 0);
+                                }
+                            };
+                            utterance.onend = () => {
+                                setPlaybackState("stopped");
+                                transcript.textContent = speechText;
+                                status.textContent = "Summary playback complete.";
+                            };
+                            utterance.onerror = (event) => {
+                                setPlaybackState("stopped");
+                                if (event.error === "canceled" || event.error === "interrupted") return;
+                                status.textContent = "Speech playback stopped or unavailable.";
+                            };
+                            showSpeechProgress(0, 0);
+                            try {
+                                speech.speak(utterance);
+                            } catch (error) {
+                                console.error("Summary speech could not start.", error);
+                                setPlaybackState("stopped");
+                                status.textContent = "Speech playback could not start. Check your browser's speech settings.";
+                            }
+                        });
+                        pauseButton.addEventListener("click", () => {
+                            speech.pause();
+                            setPlaybackState("paused");
+                            status.textContent = "Playback paused.";
+                        });
+                        resumeButton.addEventListener("click", () => {
+                            speech.resume();
+                            setPlaybackState("speaking");
+                            status.textContent = "Speaking summary…";
+                        });
+                        stopButton.addEventListener("click", () => {
+                            speech.cancel();
+                            setPlaybackState("stopped");
+                            status.textContent = "Playback stopped.";
+                        });
+                    }
+                }
+
+                const graphDataElement = root.querySelector("#graph-data");
+                if (graphDataElement) {
+                    const graphData = JSON.parse(graphDataElement.textContent);
+                    const sourceGraph = graphData.graph || { nodes: [], edges: [] };
+                    const mainLabel = (graphData.main_topic || "Main topic").trim();
+                    const candidates = [];
+                    const addCandidate = (label, type, description) => {
+                        const cleanLabel = String(label || "").trim().replace(/\s+/g, " ");
+                        if (!cleanLabel || candidates.some((node) => node.label.toLowerCase() === cleanLabel.toLowerCase())) return;
+                        candidates.push({
+                            id: `topic-${candidates.length}`,
+                            label: cleanLabel,
+                            type: type || "concept",
+                            description: description || "Important idea identified in this document.",
+                        });
+                    };
+                    const primary = (sourceGraph.nodes || []).find((node) =>
+                        node.label.toLowerCase() === mainLabel.toLowerCase());
+                    addCandidate(mainLabel, "main", "The central topic identified in the document.");
+                    (sourceGraph.nodes || []).forEach((node) => {
+                        if (primary && node.id === primary.id) return;
+                        const relation = (sourceGraph.edges || []).find((edge) =>
+                            edge.source === node.id || edge.target === node.id);
+                        addCandidate(
+                            node.label,
+                            node.type,
+                            relation ? `${node.label} ${relation.relation} the main topic.` : "Important topic identified in this document.",
+                        );
+                    });
+                    (graphData.keywords || []).forEach((keyword) => addCandidate(keyword, "keyword"));
+                    (graphData.key_points || []).forEach((point) => {
+                        const words = String(point).match(/[\p{L}\p{N}][\p{L}\p{N}'-]{2,}/gu) || [];
+                        addCandidate(words.slice(0, 3).join(" "), "concept", "A key takeaway highlighted in the generated summary.");
+                    });
+                    (graphData.summary || "").match(/[\p{L}\p{N}][\p{L}\p{N}'-]{3,}/gu)?.forEach((word) => {
+                        addCandidate(word, "keyword", "Key term identified in the generated summary.");
+                    });
+                    (graphData.key_points || []).forEach((point, index) => {
+                        if (candidates.length >= 8) return;
+                        addCandidate(
+                            `Key insight ${index + 1}`,
+                            "concept",
+                            String(point).trim() || "A key takeaway from the document.",
+                        );
+                    });
+                    const summarySentences = String(graphData.summary || "")
+                        .split(/(?<=[.!?])\s+/u)
+                        .map((sentence) => sentence.trim())
+                        .filter(Boolean);
+                    summarySentences.forEach((sentence, index) => {
+                        if (candidates.length >= 8) return;
+                        const terms = sentence.match(/[\p{L}\p{N}][\p{L}\p{N}'-]{2,}/gu) || [];
+                        addCandidate(
+                            terms.slice(0, 3).join(" ") || `Summary theme ${index + 1}`,
+                            "concept",
+                            sentence,
+                        );
+                    });
+                    while (candidates.length < 9) {
+                        const index = candidates.length + 1;
+                        addCandidate(`Document insight ${index}`, "concept", "An additional insight from the uploaded document.");
+                    }
+                    const topics = candidates.slice(0, 9);
+                    const additionalTopics = candidates.slice(9, 25);
+                    const svg = root.querySelector("#knowledge-graph");
+                    if (svg && topics.length === 9) {
+                        const details = root.querySelector("#graph-details");
+                        const search = root.querySelector("#graph-search");
+                        const showMore = root.querySelector("#graph-show-more");
+                        const topicCount = root.querySelector("#graph-topic-count");
+                        const svgNS = "http://www.w3.org/2000/svg";
+                        const width = 1000;
+                        const height = 640;
+                        const center = { x: width / 2, y: height / 2 };
+                        const definitions = document.createElementNS(svgNS, "defs");
+                        const gradient = document.createElementNS(svgNS, "radialGradient");
+                        gradient.setAttribute("id", "graph-main-gradient");
+                        const gradientStart = document.createElementNS(svgNS, "stop");
+                        gradientStart.setAttribute("offset", "0%");
+                        gradientStart.setAttribute("stop-color", "#4f46e5");
+                        const gradientEnd = document.createElementNS(svgNS, "stop");
+                        gradientEnd.setAttribute("offset", "100%");
+                        gradientEnd.setAttribute("stop-color", "#7c3aed");
+                        gradient.append(gradientStart, gradientEnd);
+                        definitions.appendChild(gradient);
+                        svg.appendChild(definitions);
+                        const scene = document.createElementNS(svgNS, "g");
+                        scene.setAttribute("class", "graph-scene");
+                        svg.appendChild(scene);
+                        const view = { x: 0, y: 0, scale: 1 };
+                        const applyTransform = () => scene.setAttribute("transform", `translate(${view.x} ${view.y}) scale(${view.scale})`);
+                        const positions = new Map([[topics[0].id, center]]);
+                        topics.slice(1).forEach((node, index) => {
+                            const angle = (2 * Math.PI * index / 8) - Math.PI / 2;
+                            positions.set(node.id, {
+                                x: center.x + Math.cos(angle) * 290,
+                                y: center.y + Math.sin(angle) * 170,
+                            });
+                        });
+                        const lineElements = [];
+                        const nodeElements = [];
+                        const topicColors = ["#2563eb", "#7c3aed", "#4f46e5", "#0891b2", "#db2777", "#059669", "#d97706", "#6d28d9"];
+                        const addEdge = (node, end) => {
+                            const line = document.createElementNS(svgNS, "line");
+                            line.setAttribute("x1", center.x);
+                            line.setAttribute("y1", center.y);
+                            line.setAttribute("x2", end.x);
+                            line.setAttribute("y2", end.y);
+                            line.setAttribute("class", "graph-edge");
+                            scene.appendChild(line);
+                            lineElements.push({ id: node.id, line });
+                        };
+                        const addNode = (node, index, point) => {
+                            const group = document.createElementNS(svgNS, "g");
+                            group.setAttribute("class", `graph-node node-${node.type}${index === 0 ? " node-main" : ""}`);
+                            if (index > 0) group.style.setProperty("--graph-topic-color", topicColors[(index - 1) % topicColors.length]);
+                            group.setAttribute("transform", `translate(${point.x} ${point.y})`);
+                            group.setAttribute("tabindex", "0");
+                            group.setAttribute("role", "button");
+                            group.setAttribute("aria-label", `${node.label}. ${node.description}`);
+                            group.style.animationDelay = `${index * 55}ms`;
+                            const title = document.createElementNS(svgNS, "title");
+                            title.textContent = `${node.label}: ${node.description}`;
+                            const shape = document.createElementNS(svgNS, index === 0 ? "circle" : "rect");
+                            if (index === 0) {
+                                shape.setAttribute("r", "58");
+                            } else {
+                                const nodeWidth = Math.min(156, Math.max(108, node.label.length * 8 + 28));
+                                shape.setAttribute("x", String(-nodeWidth / 2));
+                                shape.setAttribute("y", "-20");
+                                shape.setAttribute("width", String(nodeWidth));
+                                shape.setAttribute("height", "40");
+                                shape.setAttribute("rx", "20");
+                            }
+                            const text = document.createElementNS(svgNS, "text");
+                            const labelWords = node.label.split(/\s+/u);
+                            const labelLines = [];
+                            let labelTruncated = false;
+                            labelWords.forEach((word) => {
+                                const lineIndex = labelLines.length - 1;
+                                if (lineIndex >= 0 && `${labelLines[lineIndex]} ${word}`.length <= 13) {
+                                    labelLines[lineIndex] += ` ${word}`;
+                                } else if (labelLines.length < 2) {
+                                    labelLines.push(word.length > 13 ? `${word.slice(0, 12)}…` : word);
+                                } else if (!labelTruncated) {
+                                    labelLines[1] = `${labelLines[1].slice(0, 12)}…`;
+                                    labelTruncated = true;
+                                }
+                            });
+                            labelLines.forEach((line, lineIndex) => {
+                                const tspan = document.createElementNS(svgNS, "tspan");
+                                tspan.setAttribute("x", "0");
+                                tspan.setAttribute("dy", labelLines.length > 1 ? (lineIndex === 0 ? "-7" : "14") : "0");
+                                tspan.textContent = line;
+                                text.appendChild(tspan);
+                            });
+                            group.append(title, shape, text);
+                            const select = () => {
+                                details.replaceChildren();
+                                const heading = document.createElement("strong");
+                                heading.textContent = node.label;
+                                const description = document.createElement("span");
+                                description.textContent = ` — ${node.description}`;
+                                details.append(heading, description);
+                                lineElements.forEach(({ id, line }) => {
+                                    line.classList.toggle("edge-active", id === node.id || index === 0);
+                                });
+                            };
+                            group.addEventListener("click", select);
+                            group.addEventListener("mouseenter", select);
+                            group.addEventListener("focus", select);
+                            group.addEventListener("keydown", (event) => {
+                                if (event.key === "Enter" || event.key === " ") {
+                                    event.preventDefault();
+                                    select();
+                                }
+                            });
+                            scene.appendChild(group);
+                            nodeElements.push({ node, group });
+                        };
+                        topics.slice(1).forEach((node) => addEdge(node, positions.get(node.id)));
+                        topics.forEach((node, index) => addNode(node, index, positions.get(node.id)));
+                        let visibleAdditional = 0;
+                        const updateTopicCount = () => {
+                            const total = topics.length - 1 + visibleAdditional;
+                            topicCount.textContent = `Showing ${total} main ${total === 1 ? "topic" : "topics"}`;
+                            const remaining = additionalTopics.length - visibleAdditional;
+                            showMore.hidden = remaining <= 0;
+                            showMore.innerHTML = `Show More (${Math.min(4, remaining)}) <span aria-hidden="true">↓</span>`;
+                        };
+                        showMore.addEventListener("click", () => {
+                            const nextTopics = additionalTopics.slice(visibleAdditional, visibleAdditional + 4);
+                            nextTopics.forEach((node, offset) => {
+                                const index = topics.length + visibleAdditional + offset;
+                                const ringIndex = visibleAdditional + offset;
+                                const angle = (2 * Math.PI * (ringIndex % 8) / 8) - Math.PI / 2;
+                                const ring = Math.floor(ringIndex / 8);
+                                const point = {
+                                    x: center.x + Math.cos(angle) * (360 + ring * 45),
+                                    y: center.y + Math.sin(angle) * (235 + ring * 30),
+                                };
+                                addEdge(node, point);
+                                addNode(node, index, point);
+                            });
+                            visibleAdditional += nextTopics.length;
+                            const query = search.value.trim().toLocaleLowerCase();
+                            nodeElements.forEach(({ node, group }) => {
+                                group.classList.toggle("node-muted", Boolean(query) && !node.label.toLocaleLowerCase().includes(query));
+                            });
+                            updateTopicCount();
+                        });
+                        updateTopicCount();
+                        let dragStart = null;
+                        svg.addEventListener("pointerdown", (event) => {
+                            if (event.target.closest(".graph-node")) return;
+                            dragStart = { x: event.clientX, y: event.clientY, viewX: view.x, viewY: view.y };
+                            svg.setPointerCapture(event.pointerId);
+                        });
+                        svg.addEventListener("pointermove", (event) => {
+                            if (!dragStart) return;
+                            view.x = dragStart.viewX + event.clientX - dragStart.x;
+                            view.y = dragStart.viewY + event.clientY - dragStart.y;
+                            applyTransform();
+                        });
+                        ["pointerup", "pointercancel"].forEach((name) => svg.addEventListener(name, () => { dragStart = null; }));
+                        svg.addEventListener("wheel", (event) => {
+                            event.preventDefault();
+                            view.scale = Math.min(1.8, Math.max(.7, view.scale * (event.deltaY < 0 ? 1.08 : .92)));
+                            applyTransform();
+                        }, { passive: false });
+                        search.addEventListener("input", () => {
+                            const query = search.value.trim().toLocaleLowerCase();
+                            nodeElements.forEach(({ node, group }) => {
+                                group.classList.toggle("node-muted", Boolean(query) && !node.label.toLocaleLowerCase().includes(query));
+                            });
+                        });
+                        selectNodeDefault();
+                        function selectNodeDefault() {
+                            const first = topics[0];
+                            details.textContent = `${first.label} — ${first.description}`;
+                        }
+                    }
+                }
+
+                const quizDataElement = root.querySelector("#quiz-data");
+                if (quizDataElement) {
+                    const data = JSON.parse(quizDataElement.textContent);
+                    const questions = [
+                        ...(data.two_mark || []).map((text) => ({ text, marks: 2 })),
+                        ...(data.five_mark || []).map((text) => ({ text, marks: 5 })),
+                        ...(data.ten_mark || []).map((text) => ({ text, marks: 10 })),
+                    ];
+                    const questionElement = root.querySelector("#quiz-question");
+                    const progressLabel = root.querySelector("#quiz-progress-label");
+                    const progressBar = root.querySelector("#quiz-progress-bar");
+                    const scoreLabel = root.querySelector("#quiz-score");
+                    const finish = root.querySelector("#quiz-finish");
+                    const actions = root.querySelector(".quiz-actions");
+                    let current = 0;
+                    let confident = 0;
+                    const showQuestion = () => {
+                        if (current >= questions.length) {
+                            questionElement.hidden = true;
+                            root.querySelector(".self-check-note").hidden = true;
+                            actions.hidden = true;
+                            finish.hidden = false;
+                            root.querySelector("#quiz-final-score").textContent =
+                                `You marked ${confident} of ${questions.length} questions as “Got it”. Review the rest when you’re ready.`;
+                            progressBar.style.width = "100%";
+                            progressLabel.textContent = "ROUND COMPLETE";
+                            return;
+                        }
+                        const question = questions[current];
+                        progressLabel.textContent = `QUESTION ${current + 1} OF ${questions.length} · ${question.marks} MARKS`;
+                        scoreLabel.textContent = `${confident} got it`;
+                        progressBar.style.width = `${(current / questions.length) * 100}%`;
+                        questionElement.textContent = question.text;
+                        questionElement.classList.remove("question-enter");
+                        void questionElement.offsetWidth;
+                        questionElement.classList.add("question-enter");
+                    };
+                    root.querySelectorAll(".quiz-rate").forEach((button) => button.addEventListener("click", () => {
+                        if (button.dataset.rating === "know") confident += 1;
+                        current += 1;
+                        showQuestion();
+                    }));
+                    root.querySelector("#quiz-restart").addEventListener("click", () => {
+                        current = 0;
+                        confident = 0;
+                        questionElement.hidden = false;
+                        root.querySelector(".self-check-note").hidden = false;
+                        actions.hidden = false;
+                        finish.hidden = true;
+                        showQuestion();
+                    });
+                    showQuestion();
+                }
+            };
+
+            const askAiPage = document.getElementById("ask-ai-page");
+            const chatForm = document.getElementById("ask-form");
+            const chatInput = document.getElementById("chat-question");
+            const chatMessages = document.getElementById("chat-messages");
+            const chatStatus = document.getElementById("chat-document-status");
+            const chatUploadLink = document.getElementById("chat-upload-link");
+            const chatLoading = document.getElementById("chat-loading");
+            const chatSendButton = chatForm.querySelector(".send-button");
+            let chatHistory = [];
+            let chatToken = "";
+            let chatInFlight = false;
+
+            const currentDocumentToken = () =>
+                document.querySelector("#result-mount #ask-document-id")?.value.trim() || "";
+            const resetChat = () => {
+                chatHistory = [];
+                chatMessages.innerHTML = '<div class="chat-message chat-assistant"><span class="chat-avatar">AI</span><div class="chat-bubble"><small>DOCUMIND ASSISTANT</small><p>Ask me anything about the uploaded document.</p></div></div>';
+            };
+            const appendChatMessage = (role, content, isError = false) => {
+                const message = document.createElement("div");
+                message.className = `chat-message ${role === "user" ? "chat-user" : "chat-assistant"}`;
+                const avatar = document.createElement("span");
+                avatar.className = `chat-avatar${role === "user" ? " user-avatar" : ""}`;
+                avatar.textContent = role === "user" ? "YOU" : "AI";
+                const bubble = document.createElement("div");
+                bubble.className = `chat-bubble${isError ? " chat-error" : ""}`;
+                const label = document.createElement("small");
+                label.textContent = role === "user" ? "YOU" : "DOCUMIND ASSISTANT";
+                const text = document.createElement("p");
+                text.textContent = content;
+                bubble.append(label, text);
+                if (role === "user") message.append(bubble, avatar);
+                else message.append(avatar, bubble);
+                chatMessages.append(message);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            };
+            const syncChatDocument = () => {
+                const token = currentDocumentToken();
+                if (token && token !== chatToken) {
+                    chatToken = token;
+                    resetChat();
+                }
+                const hasDocument = Boolean(token);
+                const filename = document.querySelector("#result-mount .stat-file")?.textContent.trim();
+                chatStatus.textContent = hasDocument
+                    ? `Using ${filename || "your uploaded document"}`
+                    : "No document is ready yet. Upload and analyse a PDF, DOCX or TXT file to start asking questions.";
+                chatInput.disabled = chatInFlight;
+                chatSendButton.disabled = chatInFlight;
+                chatUploadLink.hidden = hasDocument;
+            };
+            chatUploadLink.addEventListener("click", () => {
+                window.location.assign("{{ url_for('workspace_page', view='analyzer') }}");
+            });
+            document.addEventListener("keydown", (event) => {
+                if (event.key === "Escape" && document.body.classList.contains("sidebar-open")) {
+                    setSidebarOpen(false);
+                }
+            });
+            chatInput.addEventListener("keydown", (event) => {
+                if (
+                    event.key === "Enter"
+                    && !event.shiftKey
+                    && !event.isComposing
+                ) {
+                    event.preventDefault();
+                    chatForm.requestSubmit();
+                }
+            });
+            askAiPage.querySelectorAll(".suggestion-chip").forEach((button) => {
+                button.addEventListener("click", () => {
+                    if (chatInput.disabled) return;
+                    chatInput.value = button.textContent.trim();
+                    chatInput.focus();
+                    chatForm.requestSubmit();
+                });
+            });
+            chatForm.addEventListener("submit", async (event) => {
+                event.preventDefault();
+                if (chatInFlight) return;
+                syncChatDocument();
+                if (!chatToken) {
+                    const message = "Upload and analyse a document before asking AI. Your question is still here, so you can send it once the document is ready.";
+                    chatStatus.textContent = message;
+                    appendChatMessage("assistant", message, true);
+                    return;
+                }
+                const question = chatInput.value.trim();
+                if (!question) {
+                    chatInput.focus();
+                    return;
+                }
+                if (question.length > 1000) {
+                    chatStatus.textContent = "Please keep your question under 1,000 characters.";
+                    return;
+                }
+
+                appendChatMessage("user", question);
+                chatInFlight = true;
+                chatLoading.hidden = false;
+                chatSendButton.disabled = true;
+                chatInput.disabled = true;
+                try {
+                    const response = await fetch(chatForm.action, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+                        body: JSON.stringify({
+                            document_id: chatToken,
+                            question,
+                            history: chatHistory,
+                        }),
+                    });
+                    let result;
+                    try {
+                        result = await response.json();
+                    } catch (_error) {
+                        throw new Error(
+                            `Ask AI returned an invalid response (HTTP ${response.status}).`,
+                        );
+                    }
+                    if (!response.ok) {
+                        throw new Error(
+                            result && typeof result.error === "string"
+                                ? result.error
+                                : `The question could not be answered (HTTP ${response.status}).`,
+                        );
+                    }
+                    if (typeof result.answer !== "string" || !result.answer.trim()) {
+                        throw new Error("The AI returned an empty answer.");
+                    }
+                    appendChatMessage("assistant", result.answer);
+                    chatHistory.push(
+                        { role: "user", content: question },
+                        { role: "assistant", content: result.answer },
+                    );
+                    chatHistory = chatHistory.slice(-8);
+                    chatInput.value = "";
+                    chatStatus.textContent = "Answers are based only on your uploaded document.";
+                } catch (error) {
+                    const message = error instanceof Error
+                        ? error.message
+                        : "The question could not be answered. Please try again.";
+                    chatStatus.textContent = message;
+                    appendChatMessage("assistant", message, true);
+                } finally {
+                    chatLoading.hidden = true;
+                    chatInFlight = false;
+                    syncChatDocument();
+                    if (!chatInput.disabled) chatInput.focus();
+                }
+            });
+
+            initializeResultFeatures();
+            syncChatDocument();
+
+            const pendingScrollTarget = (() => {
+                try {
+                    const target = sessionStorage.getItem("document-ai-scroll-target");
+                    sessionStorage.removeItem("document-ai-scroll-target");
+                    return target;
+                } catch (_error) {
+                    return "";
+                }
+            })();
+            const pageScrollTargets = {
+                comparison: "comparison",
+                "study-mode": "study-mode",
+                summary: "summary",
+            };
+            const initialTarget = pendingScrollTarget || pageScrollTargets[document.body.dataset.page] || "";
+            if (initialTarget) {
+                window.requestAnimationFrame(() => document.getElementById(initialTarget)?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                }));
+            }
+        })();
+    </script>
+</body>
+</html>
