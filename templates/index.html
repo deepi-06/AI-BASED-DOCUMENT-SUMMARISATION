@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#f4f7fb">
+    <meta name="theme-color" content="#DCE7F1">
     <title>Document Intelligence | AI Workspace</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script>
@@ -38,6 +38,9 @@
             </a>
             <a class="sidebar-link" href="{{ url_for('workspace_page', view='summary') }}" data-nav-target="summary" title="Document Summarization">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14M5 9h14M5 13h9M5 17h11M5 21h7"/></svg><span>Document Summarization</span>
+            </a>
+            <a class="sidebar-link" href="{{ url_for('workspace_page', view='quick-insights') }}" data-nav-target="quick-insights" title="Quick Insights">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.2 5.3L20 10.5l-5.8 2.2L12 18l-2.2-5.3L4 10.5l5.8-2.2L12 3Z"/><path d="m19 16 .8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8L19 16Z"/></svg><span>Quick Insights</span>
             </a>
             <a class="sidebar-link" href="{{ url_for('workspace_page', view='listen') }}" data-nav-target="listen" title="Listen to Summary">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h3l5 4V6l-5 4H4Z"/><path d="M16 9a5 5 0 0 1 0 6m2.5-8.5a8.5 8.5 0 0 1 0 11"/></svg><span>Listen to Summary</span>
@@ -87,7 +90,7 @@
     </header>
     <div class="app-content">
     <header class="workspace-topbar">
-        <span class="workspace-topbar-title">{{ {'home': 'Home', 'analyzer': 'Document Analyzer', 'summary': 'Document Summarization', 'listen': 'Listen to Summary', 'mind-map': 'Mind Map', 'ask-ai': 'Ask AI', 'comparison': 'Compare Documents', 'study-mode': 'Study Mode', 'dashboard': 'Dashboard', 'history': 'History', 'settings': 'Settings'}.get(view|default('home'), 'Home') }}</span>
+        <span class="workspace-topbar-title">{{ {'home': 'Home', 'analyzer': 'Document Analyzer', 'summary': 'Document Summarization', 'quick-insights': 'Quick Insights', 'listen': 'Listen to Summary', 'mind-map': 'Mind Map', 'ask-ai': 'Ask AI', 'comparison': 'Compare Documents', 'study-mode': 'Study Mode', 'dashboard': 'Dashboard', 'history': 'History', 'settings': 'Settings'}.get(view|default('home'), 'Home') }}</span>
         <span class="workspace-topbar-spacer"></span>
         <span class="workspace-topbar-user">Local workspace</span>
         <span class="workspace-topbar-avatar" aria-hidden="true">DM</span>
@@ -120,7 +123,24 @@
         </div>
     </header>
 
-    <section class="capability-strip" aria-label="Document intelligence features">
+    {% if dashboard_data is defined %}
+    <section class="home-stats" id="home-stats" aria-label="Workspace statistics">
+        <article class="home-stat home-stat-blue">
+            <span class="home-stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 3.75h8l4 4v12.5H6a2 2 0 0 1-2-2v-12.5a2 2 0 0 1 2-2Z"/><path d="M14 3.75v4h4M8 12h8M8 15.5h5"/></svg></span>
+            <span class="home-stat-copy"><strong class="home-stat-value">{{ dashboard_data.documents_processed }}</strong><small>Documents analyzed</small></span>
+        </article>
+        <article class="home-stat home-stat-mint">
+            <span class="home-stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+            <span class="home-stat-copy"><strong class="home-stat-value">{{ dashboard_data.reading_minutes_saved }}</strong><small>Reading minutes saved</small></span>
+        </article>
+        <article class="home-stat home-stat-lavender">
+            <span class="home-stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 1 4 17.5v-12Z"/><path d="M4 17a2.5 2.5 0 0 1 2.5-2.5H20M8 7h8M8 10h6"/></svg></span>
+            <span class="home-stat-copy"><strong class="home-stat-value">{{ dashboard_data.quizzes_attempted }}</strong><small>Study quizzes completed</small></span>
+        </article>
+    </section>
+    {% endif %}
+
+    <section class="capability-strip" aria-label="Quick actions">
             <a class="capability-card capability-summary" href="{{ url_for('workspace_page', view='summary') }}">
             <span class="capability-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 5h14M5 9h14M5 13h9M5 17h11M5 21h7"/></svg></span>
             <span><strong>Flexible summaries</strong><small>Small, medium or detailed</small></span>
@@ -155,6 +175,23 @@
                 {% endfor %}
             {% endwith %}
         </div>
+
+        <section id="home-activity" class="workspace-section home-activity reveal" aria-labelledby="home-activity-title">
+            <div class="home-activity-heading">
+                <div>
+                    <span class="section-kicker">YOUR WORKSPACE</span>
+                    <h2 id="home-activity-title">Recent documents</h2>
+                    <p>Your latest summaries, ready to revisit.</p>
+                </div>
+                <a class="button button-outline" href="{{ url_for('workspace_page', view='history') }}" data-nav-target="history">View history <span aria-hidden="true">→</span></a>
+            </div>
+            <div id="home-activity-list" class="home-activity-list" aria-live="polite"></div>
+            <div id="home-activity-empty" class="home-activity-empty" hidden>
+                <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5m4-1v5l3.5 2"/></svg></span>
+                <div><strong>No recent documents yet</strong><p>Analysed documents will appear here for quick reference.</p></div>
+                <a href="{{ url_for('workspace_page', view='analyzer') }}" data-nav-target="analyzer">Analyse a document <span aria-hidden="true">→</span></a>
+            </div>
+        </section>
 
         <section id="upload" class="workspace-section reveal">
             <div class="section-heading section-heading-centered">
@@ -326,6 +363,93 @@
             </article>
 
             {% if result.graph_error %}<div class="toast toast-error inline-notice">{{ result.graph_error }}</div>{% endif %}
+            <section class="workspace-section quick-insights-page" id="quick-insights" data-result-page="quick-insights"
+                     data-endpoint="{{ url_for('quick_insights') }}"
+                     data-document-id="{{ document_id }}"
+                     aria-labelledby="quick-insights-title">
+                <div class="section-heading">
+                    <div>
+                        <span class="section-kicker">INSTANT DOCUMENT SNAPSHOT</span>
+                        <h2 id="quick-insights-title">Quick Insights</h2>
+                        <p>A concise, AI-generated snapshot grounded in <strong>{{ filename }}</strong>.</p>
+                    </div>
+                    {% if quick_insights %}<span class="success-chip"><i></i> READY</span>{% endif %}
+                </div>
+                <div class="quick-insights-grid" id="quick-insights-results" aria-live="polite">
+                    {% if quick_insights %}
+                    <article class="quick-insight-card quick-insight-takeaway">
+                        <span class="quick-insight-icon insight-icon-blue" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M12 3 4 7v5c0 5 3.4 8.3 8 9 4.6-.7 8-4 8-9V7l-8-4Z"/><path d="m8.5 12 2.2 2.2 4.8-4.8"/></svg>
+                        </span>
+                        <span class="quick-insight-label">{{ quick_insights.labels.takeaway }}</span>
+                        <p>{{ quick_insights.takeaway or quick_insights.labels.not_available }}</p>
+                    </article>
+                    <article class="quick-insight-card quick-insight-summary">
+                        <span class="quick-insight-icon insight-icon-cyan" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+                        </span>
+                        <span class="quick-insight-label">{{ quick_insights.labels.short_summary }}</span>
+                        <p>{{ quick_insights.short_summary or quick_insights.labels.not_available }}</p>
+                    </article>
+                    <article class="quick-insight-card">
+                        <span class="quick-insight-icon insight-icon-violet" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M4 19.5V4.5M4 19.5h16M8 16v-5m4 5V7m4 9v-8m4 8v-4"/></svg>
+                        </span>
+                        <span class="quick-insight-label">{{ quick_insights.labels.document_type }}</span>
+                        <strong>{{ quick_insights.document_type or quick_insights.labels.not_available }}</strong>
+                    </article>
+                    <article class="quick-insight-card">
+                        <span class="quick-insight-icon insight-icon-gold" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.4-6.4-1.4 1.4M7 17l-1.4 1.4m12.8 0L17 17M7 7 5.6 5.6"/><circle cx="12" cy="12" r="4"/></svg>
+                        </span>
+                        <span class="quick-insight-label">{{ quick_insights.labels.difficulty }}</span>
+                        <strong class="difficulty-badge difficulty-{{ quick_insights.difficulty }}">{{ quick_insights.difficulty_label }}</strong>
+                    </article>
+                    <article class="quick-insight-card">
+                        <span class="quick-insight-icon insight-icon-teal" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                        </span>
+                        <span class="quick-insight-label">{{ quick_insights.labels.reading_time_saved }}</span>
+                        <strong data-reading-time-saved>{{ quick_insights.reading_time_saved_label }}</strong>
+                        <small>{{ quick_insights.labels.reading_time_note }}</small>
+                    </article>
+                    <article class="quick-insight-card quick-insight-topics">
+                        <span class="quick-insight-icon insight-icon-cyan" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M10 3H3v7l11 11 7-7L10 3Z"/><circle cx="7" cy="7" r="1"/></svg>
+                        </span>
+                        <span class="quick-insight-label">{{ quick_insights.labels.main_topics }}</span>
+                        <div class="quick-topic-list">
+                            {% for topic in quick_insights.topics %}<span class="quick-topic">#{{ topic }}</span>{% else %}<p class="quick-insights-empty">{{ quick_insights.labels.no_topics }}</p>{% endfor %}
+                        </div>
+                    </article>
+                    <article class="quick-insight-card quick-insight-numbers">
+                        <span class="quick-insight-icon insight-icon-green" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M8 4 6 20m12-16-2 16M4 9h16M3 15h16"/></svg>
+                        </span>
+                        <span class="quick-insight-label">{{ quick_insights.labels.important_numbers }}</span>
+                        {% if quick_insights.important_numbers %}
+                        <ul class="quick-number-list">
+                            {% for item in quick_insights.important_numbers %}
+                            <li><strong>{{ item.value }}</strong><span>{{ item.context }}</span></li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}<p class="quick-insights-empty">{{ quick_insights.labels.no_numbers }}</p>{% endif %}
+                    </article>
+                    {% else %}
+                    <article class="quick-insights-placeholder">
+                        <span class="quick-insight-icon insight-icon-blue" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m12 3 2.2 5.3L20 10.5l-5.8 2.2L12 18l-2.2-5.3L4 10.5l5.8-2.2L12 3Z"/></svg></span>
+                        <h3>Your document snapshot is ready to generate</h3>
+                        <p>Get a one-line takeaway, reading estimate, topic tags and key numerical findings.</p>
+                        <button class="button button-primary" id="quick-insights-generate" type="button">Generate Quick Insights <span aria-hidden="true">→</span></button>
+                    </article>
+                    {% endif %}
+                </div>
+                {% if quick_insights %}<button class="button button-outline quick-insights-refresh" id="quick-insights-generate" type="button">Refresh insights</button>{% endif %}
+                <div class="study-generation-status quick-insights-loading" id="quick-insights-loading" role="status" aria-live="polite" hidden>
+                    <span class="processing-orb"></span><span>Analyzing your document for quick insights…</span>
+                    <span class="typing-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                </div>
+            </section>
             <section class="panel feature-panel" id="knowledge-map" data-result-page="mind-map">
                 <div class="panel-heading">
                     <div class="heading-with-icon"><span class="panel-icon panel-icon-teal"><svg viewBox="0 0 24 24"><circle cx="6" cy="7" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="13" cy="18" r="2.5"/><path d="m8.4 6.7 7.1-.5M7.6 9l4.2 6.8m4.8-.2 1-7.1"/></svg></span><div><span class="section-kicker">CONNECTED IDEAS</span><h3>Knowledge map</h3></div></div>
@@ -335,6 +459,12 @@
                 <div class="graph-toolbar">
                     <label for="graph-search" class="sr-only">Find a graph concept</label>
                     <input id="graph-search" type="search" placeholder="Find a concept...">
+                    <div class="graph-controls" role="group" aria-label="Mind map zoom controls">
+                        <button type="button" class="graph-control-button" data-graph-zoom="out" aria-label="Zoom out">−</button>
+                        <span id="graph-zoom-level" aria-live="polite">100%</span>
+                        <button type="button" class="graph-control-button" data-graph-zoom="in" aria-label="Zoom in">+</button>
+                        <button type="button" class="graph-control-reset" data-graph-zoom="reset">Reset</button>
+                    </div>
                     <div class="graph-legend"><span><i class="legend-concept"></i>Concept</span><span><i class="legend-entity"></i>Entity</span><span><i class="legend-keyword"></i>Keyword</span></div>
                 </div>
                 <div class="graph-frame"><svg id="knowledge-graph" viewBox="0 0 1000 640" role="img" aria-label="Interactive document knowledge graph"></svg></div>
@@ -527,6 +657,8 @@
             </div>
             <div class="panel comparison-panel">
                 <form id="compare-form" method="POST" action="{{ url_for('compare') }}" enctype="multipart/form-data">
+                    <input type="hidden" name="language" id="compare-language" value="{{ selected_language }}">
+                    <input type="hidden" name="custom_language" id="compare-custom-language">
                     <div class="comparison-inputs">
                         <div class="comparison-file">
                             <label class="field-label" for="document-a">DOCUMENT 1</label>
@@ -544,13 +676,61 @@
                 </form>
                 {% if comparison %}
                 <div class="comparison-results">
-                    <div class="comparison-pair"><span class="pair-document"><i>01</i>{{ comparison.filename_a }}</span><span class="pair-connector">compared with</span><span class="pair-document"><i>02</i>{{ comparison.filename_b }}</span></div>
-                    <article class="delta-summary"><span class="section-kicker">THE BIG PICTURE</span><h3>Overall delta summary</h3><p>{{ comparison.delta_summary }}</p></article>
-                    <div class="diff-grid">
-                        {% for key, heading, color in [("similarities", "Similarities", "similarities"), ("added", "Added content", "added"), ("removed", "Removed content", "removed"), ("changed", "Changed content", "changed"), ("important_differences", "Important differences", "differences")] %}
-                        <article class="diff-card diff-{{ color }}"><h3><i></i>{{ heading }}</h3>{% if comparison[key] %}<ul>{% for item in comparison[key] %}<li>{{ item }}</li>{% endfor %}</ul>{% else %}<p>No notable items identified.</p>{% endif %}</article>
-                        {% endfor %}
+                    {% set labels = comparison.section_labels %}
+                    <div class="comparison-document-pair">
+                        <article class="comparison-document-card"><span class="compare-file-icon">01</span><div><span class="quick-insight-label">{{ labels.document_1 }}</span><strong>{{ comparison.filename_a }}</strong></div></article>
+                        <article class="comparison-document-card"><span class="compare-file-icon compare-file-icon-alt">02</span><div><span class="quick-insight-label">{{ labels.document_2 }}</span><strong>{{ comparison.filename_b }}</strong></div></article>
                     </div>
+                    <section class="comparison-report-card">
+                        <h3>{{ labels.overview }}</h3>
+                        <div class="comparison-overview-grid">
+                            <article><span>{{ labels.document_1 }} · {{ comparison.filename_a }}</span><p>{{ comparison.document_overview.document_1 }}</p></article>
+                            <article><span>{{ labels.document_2 }} · {{ comparison.filename_b }}</span><p>{{ comparison.document_overview.document_2 }}</p></article>
+                        </div>
+                    </section>
+                    <section class="comparison-report-card">
+                        <h3>{{ labels.similarities }}</h3>
+                        {% if comparison.similarities %}
+                        <ul class="comparison-bullet-list">{% for item in comparison.similarities %}<li>{{ item }}</li>{% endfor %}</ul>
+                        {% else %}<p class="comparison-empty">{{ labels.no_items }}</p>{% endif %}
+                    </section>
+                    <section class="comparison-report-card">
+                        <h3>{{ labels.differences }}</h3>
+                        {% if comparison.differences %}
+                        <div class="comparison-table-wrap" role="region" aria-label="{{ labels.differences }}" tabindex="0">
+                            <table class="comparison-table">
+                                <thead><tr><th scope="col">{{ labels.aspect }}</th><th scope="col">{{ labels.document_1 }}</th><th scope="col">{{ labels.document_2 }}</th><th scope="col">{{ labels.significance }}</th></tr></thead>
+                                <tbody>{% for row in comparison.differences %}
+                                <tr><th scope="row">{{ row.aspect }}</th><td>{{ row.document_1 }}</td><td>{{ row.document_2 }}</td><td>{{ row.significance }}</td></tr>
+                                {% endfor %}</tbody>
+                            </table>
+                        </div>
+                        {% else %}<p class="comparison-empty">{{ labels.no_items }}</p>{% endif %}
+                    </section>
+                    <div class="comparison-unique-grid">
+                        <section class="comparison-report-card comparison-unique-card">
+                            <h3><span class="unique-dot unique-dot-one"></span>{{ labels.document_1_only }}</h3>
+                            {% if comparison.document_1_only %}<ul class="comparison-bullet-list">{% for item in comparison.document_1_only %}<li>{{ item }}</li>{% endfor %}</ul>
+                            {% else %}<p class="comparison-empty">{{ labels.no_items }}</p>{% endif %}
+                        </section>
+                        <section class="comparison-report-card comparison-unique-card">
+                            <h3><span class="unique-dot unique-dot-two"></span>{{ labels.document_2_only }}</h3>
+                            {% if comparison.document_2_only %}<ul class="comparison-bullet-list">{% for item in comparison.document_2_only %}<li>{{ item }}</li>{% endfor %}</ul>
+                            {% else %}<p class="comparison-empty">{{ labels.no_items }}</p>{% endif %}
+                        </section>
+                    </div>
+                    <section class="comparison-report-card">
+                        <h3>{{ labels.important_findings }}</h3>
+                        {% if comparison.important_findings %}
+                        <div class="comparison-findings-grid">{% for finding in comparison.important_findings %}
+                            <article class="comparison-finding finding-{{ finding.type }}"><span>{{ finding.type_label }}</span><p>{{ finding.description }}</p></article>
+                        {% endfor %}</div>
+                        {% else %}<p class="comparison-empty">{{ labels.no_items }}</p>{% endif %}
+                    </section>
+                    <section class="comparison-summary-grid">
+                        <article class="comparison-report-card comparison-summary-card"><h3>{{ labels.overall_summary }}</h3><p>{{ comparison.overall_summary }}</p></article>
+                        <article class="comparison-report-card comparison-conclusion-card"><h3>{{ labels.conclusion }}</h3><p>{{ comparison.final_conclusion }}</p></article>
+                    </section>
                 </div>
                 {% endif %}
             </div>
@@ -697,6 +877,10 @@
         </div>
     </section>
 
+    <a class="home-ai-shortcut" href="{{ url_for('workspace_page', view='ask-ai') }}" data-nav-target="ask-ai" aria-label="Open Ask AI assistant">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 11.5a8 8 0 0 1-8 8H7l-3.5 2v-6a8 8 0 1 1 17-4Z"/><path d="M8 11h8M8 14.5h5"/></svg>
+        <span>Ask AI</span>
+    </a>
     <footer class="footer"><a class="brand footer-brand" href="{{ url_for('index') }}"><span class="brand-mark"><svg viewBox="0 0 24 24"><path d="M7 3.75h7l4 4v12.5H7a2 2 0 0 1-2-2v-12.5a2 2 0 0 1 2-2Z"/><path d="M14 3.75v4h4M8.5 12h7"/></svg></span><span class="brand-copy">Docu<span>Mind</span><small>DOCUMENT INTELLIGENCE</small></span></a><span>AI-powered clarity for every document.</span><a href="{{ url_for('index') }}">Back to Home</a></footer>
     </div>
 
@@ -708,7 +892,7 @@
             const setTheme = (theme) => {
                 root.dataset.theme = theme;
                 themeButton.setAttribute("aria-label", theme === "dark" ? "Switch to light mode" : "Switch to dark mode");
-                themeMeta.content = theme === "dark" ? "#0b1220" : "#f4f7fb";
+                themeMeta.content = theme === "dark" ? "#283b4e" : "#DCE7F1";
                 document.getElementById("theme-toggle-label").textContent =
                     theme === "dark" ? "Light mode" : "Dark mode";
                 try { sessionStorage.setItem("document-ai-theme", theme); } catch (_error) {}
@@ -730,6 +914,58 @@
                 if (revealObserver) revealObserver.observe(element);
                 else element.classList.add("is-visible");
             });
+
+            const homeStats = document.getElementById("home-stats");
+            if (homeStats && document.body.dataset.page === "home"
+                && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+                homeStats.querySelectorAll(".home-stat-value").forEach((valueElement) => {
+                    const target = Number(valueElement.textContent.replace(/,/g, "").trim());
+                    if (!Number.isFinite(target)) return;
+                    const formatter = new Intl.NumberFormat(undefined, { maximumFractionDigits: 0 });
+                    const startedAt = performance.now();
+                    const duration = 850;
+                    const countUp = (now) => {
+                        const progress = Math.min((now - startedAt) / duration, 1);
+                        const eased = 1 - ((1 - progress) ** 3);
+                        valueElement.textContent = formatter.format(target * eased);
+                        if (progress < 1) window.requestAnimationFrame(countUp);
+                    };
+                    valueElement.textContent = formatter.format(0);
+                    window.requestAnimationFrame(countUp);
+                });
+            }
+
+            const dashboard = document.getElementById("dashboard");
+            if (dashboard && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+                dashboard.querySelectorAll(".dashboard-metric-card > strong").forEach((valueElement) => {
+                    const valueNode = Array.from(valueElement.childNodes).find(
+                        (node) => node.nodeType === Node.TEXT_NODE && /\d/.test(node.nodeValue),
+                    );
+                    if (!valueNode) return;
+
+                    const match = valueNode.nodeValue.match(/^(\s*[^\d-]*)(-?\d[\d,]*(?:\.\d+)?)(.*)$/);
+                    if (!match) return;
+
+                    const [, prefix, originalNumber, suffix] = match;
+                    const target = Number(originalNumber.replace(/,/g, ""));
+                    if (!Number.isFinite(target) || target === 0) return;
+                    const decimalPlaces = (originalNumber.split(".")[1] || "").length;
+                    const formatter = new Intl.NumberFormat(undefined, {
+                        minimumFractionDigits: decimalPlaces,
+                        maximumFractionDigits: decimalPlaces,
+                    });
+                    const startedAt = performance.now();
+                    const duration = 760;
+                    const countUp = (now) => {
+                        const progress = Math.min((now - startedAt) / duration, 1);
+                        const eased = 1 - ((1 - progress) ** 3);
+                        valueNode.nodeValue = `${prefix}${formatter.format(target * eased)}${suffix}`;
+                        if (progress < 1) window.requestAnimationFrame(countUp);
+                    };
+                    valueNode.nodeValue = `${prefix}${formatter.format(0)}${suffix}`;
+                    window.requestAnimationFrame(countUp);
+                });
+            }
 
             const showToast = (message, category = "success") => {
                 const region = document.getElementById("toast-region");
@@ -790,13 +1026,14 @@
             const applyWorkspaceView = (view) => {
                 const home = view === "home";
                 const hasResult = Boolean(document.querySelector("#result-mount #summary"));
-                const resultViews = new Set(["analyzer", "summary", "listen", "mind-map", "study-mode"]);
-                const pageNeedsDocument = new Set(["summary", "listen", "mind-map", "study-mode"]);
+                const resultViews = new Set(["analyzer", "summary", "quick-insights", "listen", "mind-map", "study-mode"]);
+                const pageNeedsDocument = new Set(["summary", "quick-insights", "listen", "mind-map", "study-mode"]);
                 const pageParts = document.querySelectorAll("[data-result-page]");
 
                 document.body.dataset.page = view;
                 document.querySelector(".hero").hidden = !home;
                 document.querySelector(".capability-strip").hidden = !home;
+                document.getElementById("home-activity").hidden = !home;
                 const uploadViews = new Set(["analyzer", "summary", "listen", "mind-map", "study-mode"]);
                 document.getElementById("upload").hidden = !home && !(!hasResult && uploadViews.has(view));
                 pageParts.forEach((part) => {
@@ -856,6 +1093,41 @@
                         timeStyle: "short",
                     }).format(date);
             };
+            const homeActivityList = document.getElementById("home-activity-list");
+            const homeActivityEmpty = document.getElementById("home-activity-empty");
+            const renderHomeActivity = (records) => {
+                homeActivityList.replaceChildren();
+                const recentRecords = records.slice(0, 3);
+                homeActivityEmpty.hidden = recentRecords.length > 0;
+                recentRecords.forEach((record) => {
+                    const item = document.createElement("details");
+                    item.className = "home-activity-item";
+                    const heading = document.createElement("summary");
+                    const icon = document.createElement("span");
+                    icon.className = "home-activity-icon";
+                    icon.setAttribute("aria-hidden", "true");
+                    icon.innerHTML = '<svg viewBox="0 0 24 24"><path d="M6 3.75h8l4 4v12.5H6a2 2 0 0 1-2-2v-12.5a2 2 0 0 1 2-2Z"/><path d="M14 3.75v4h4M8 12h8M8 15.5h6"/></svg>';
+                    const title = document.createElement("span");
+                    title.className = "home-activity-title";
+                    const filename = document.createElement("strong");
+                    filename.textContent = record.filename;
+                    const meta = document.createElement("small");
+                    meta.textContent = historyDate(record.created_at);
+                    title.append(filename, meta);
+                    const arrow = document.createElement("span");
+                    arrow.className = "home-activity-arrow";
+                    arrow.setAttribute("aria-hidden", "true");
+                    arrow.textContent = "⌄";
+                    heading.append(icon, title, arrow);
+                    const summary = document.createElement("p");
+                    summary.textContent = record.summary;
+                    const language = document.createElement("small");
+                    language.className = "home-activity-language";
+                    language.textContent = `Summary language: ${record.language}`;
+                    item.append(heading, summary, language);
+                    homeActivityList.append(item);
+                });
+            };
             const loadHistory = () => {
                 try {
                     const stored = localStorage.getItem(historyKey);
@@ -904,6 +1176,7 @@
                 });
             };
             renderHistory();
+            renderHomeActivity(loadHistory());
             const historyDataElement = document.getElementById("history-entry-data");
             if (historyDataElement) {
                 try {
@@ -913,6 +1186,7 @@
                     const recentRecords = records.slice(0, 12);
                     localStorage.setItem(historyKey, JSON.stringify(recentRecords));
                     renderHistory(recentRecords);
+                    renderHomeActivity(recentRecords);
                 } catch (error) {
                     console.error("Could not save document history.", error);
                     showToast("This summary could not be saved to browser history.", "error");
@@ -922,6 +1196,7 @@
                 try {
                     localStorage.removeItem(historyKey);
                     renderHistory([]);
+                    renderHomeActivity([]);
                     showToast("Document history cleared.");
                 } catch (error) {
                     console.error("Could not clear document history.", error);
@@ -1007,7 +1282,28 @@
                 customLanguage.hidden = languageSelect.value !== "other";
                 customLanguage.required = languageSelect.value === "other";
                 if (languageSelect.value === "other") customLanguage.focus();
+                else persistLanguagePreference();
             });
+            const persistLanguagePreference = async () => {
+                if (languageSelect.value === "other" && !customLanguage.value.trim()) return;
+                const preference = new FormData();
+                preference.set("language", languageSelect.value);
+                preference.set("custom_language", customLanguage.value);
+                try {
+                    const response = await fetch("{{ url_for('save_language_preference') }}", {
+                        method: "POST",
+                        body: preference,
+                        keepalive: true,
+                    });
+                    if (!response.ok) {
+                        throw new Error(`Could not save language preference (HTTP ${response.status}).`);
+                    }
+                } catch (error) {
+                    console.error("Language preference could not be saved.", error);
+                    showToast("Could not save the selected output language. Please try again.", "error");
+                }
+            };
+            customLanguage.addEventListener("blur", persistLanguagePreference);
 
             const uploadForm = document.getElementById("upload-form");
             uploadForm.addEventListener("submit", async (event) => {
@@ -1103,7 +1399,10 @@
             const compareForm = document.getElementById("compare-form");
             const compareButton = document.getElementById("compare-btn");
             compareForm.addEventListener("submit", () => {
+                document.getElementById("compare-language").value = languageSelect.value;
+                document.getElementById("compare-custom-language").value = customLanguage.value;
                 try { sessionStorage.setItem("document-ai-scroll-target", "comparison"); } catch (_error) {}
+                if (compareButton.disabled) return;
                 compareButton.disabled = true;
                 document.getElementById("compare-loading").hidden = false;
             });
@@ -1136,6 +1435,143 @@
             });
 
             const initializeResultFeatures = (root = document) => {
+                const quickInsights = root.querySelector("#quick-insights");
+                if (quickInsights && quickInsights.dataset.initialized !== "true") {
+                    quickInsights.dataset.initialized = "true";
+                    const generateButton = quickInsights.querySelector("#quick-insights-generate");
+                    const loading = quickInsights.querySelector("#quick-insights-loading");
+                    const results = quickInsights.querySelector("#quick-insights-results");
+                    const icons = {
+                        takeaway: '<path d="M12 3 4 7v5c0 5 3.4 8.3 8 9 4.6-.7 8-4 8-9V7l-8-4Z"/><path d="m8.5 12 2.2 2.2 4.8-4.8"/>',
+                        summary: '<path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/>',
+                        document: '<path d="M5 3h9l5 5v13H5z"/><path d="M14 3v5h5M8 13h8M8 17h6"/>',
+                        difficulty: '<path d="M12 3v2m0 14v2m9-9h-2M5 12H3"/><circle cx="12" cy="12" r="4"/>',
+                        time: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+                        topics: '<path d="M10 3H3v7l11 11 7-7L10 3Z"/><circle cx="7" cy="7" r="1"/>',
+                        numbers: '<path d="M8 4 6 20m12-16-2 16M4 9h16M3 15h16"/>',
+                    };
+                    const addCard = (label, value, icon, className, tagName = "p") => {
+                        const card = document.createElement("article");
+                        card.className = `quick-insight-card ${className || ""}`.trim();
+                        const iconElement = document.createElement("span");
+                        iconElement.className = `quick-insight-icon insight-icon-${icon}`;
+                        iconElement.setAttribute("aria-hidden", "true");
+                        iconElement.innerHTML = `<svg viewBox="0 0 24 24">${icons[icon]}</svg>`;
+                        const labelElement = document.createElement("span");
+                        labelElement.className = "quick-insight-label";
+                        labelElement.textContent = label;
+                        const valueElement = document.createElement(tagName);
+                        valueElement.textContent = value;
+                        card.append(iconElement, labelElement, valueElement);
+                        return card;
+                    };
+                    generateButton?.addEventListener("click", async () => {
+                        if (generateButton.disabled) return;
+                        generateButton.disabled = true;
+                        generateButton.setAttribute("aria-busy", "true");
+                        loading.hidden = false;
+                        try {
+                            const response = await fetch(quickInsights.dataset.endpoint, {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({
+                                    document_id: quickInsights.dataset.documentId,
+                                }),
+                            });
+                            const payload = await response.json();
+                            if (!response.ok) {
+                                throw new Error(payload.error || `Request failed (${response.status}).`);
+                            }
+                            const { insights } = payload;
+                            if (!insights || !insights.labels || !Array.isArray(insights.topics)
+                                || !Array.isArray(insights.important_numbers)
+                                || typeof insights.document_type !== "string"
+                                || typeof insights.short_summary !== "string") {
+                                throw new Error("The server returned incomplete quick insights.");
+                            }
+                            const nextResults = document.createDocumentFragment();
+                            nextResults.append(
+                                addCard(
+                                    insights.labels.takeaway,
+                                    insights.takeaway || insights.labels.not_available,
+                                    "blue",
+                                    "quick-insight-takeaway",
+                                ),
+                                addCard(
+                                    insights.labels.short_summary,
+                                    insights.short_summary || insights.labels.not_available,
+                                    "cyan",
+                                    "quick-insight-summary",
+                                ),
+                                addCard(
+                                    insights.labels.document_type,
+                                    insights.document_type || insights.labels.not_available,
+                                    "violet",
+                                    "",
+                                ),
+                                addCard(insights.labels.difficulty, insights.difficulty_label, "gold", ""),
+                                addCard(insights.labels.reading_time_saved, insights.reading_time_saved_label, "teal", ""),
+                            );
+                            const timeCard = nextResults.lastElementChild;
+                            const timeNote = document.createElement("small");
+                            timeNote.textContent = insights.labels.reading_time_note;
+                            timeCard.append(timeNote);
+                            const topicsCard = addCard(
+                                insights.labels.main_topics, "", "cyan", "quick-insight-topics",
+                            );
+                            const topicList = document.createElement("div");
+                            topicList.className = "quick-topic-list";
+                            if (insights.topics.length) {
+                                insights.topics.forEach((topic) => {
+                                    const tag = document.createElement("span");
+                                    tag.className = "quick-topic";
+                                    tag.textContent = `#${topic}`;
+                                    topicList.append(tag);
+                                });
+                            } else {
+                                const empty = document.createElement("p");
+                                empty.className = "quick-insights-empty";
+                                empty.textContent = insights.labels.no_topics;
+                                topicList.append(empty);
+                            }
+                            topicsCard.lastElementChild.remove();
+                            topicsCard.append(topicList);
+                            nextResults.append(topicsCard);
+                            const numbersCard = addCard(
+                                insights.labels.important_numbers, "", "green", "quick-insight-numbers",
+                            );
+                            if (insights.important_numbers.length) {
+                                const list = document.createElement("ul");
+                                list.className = "quick-number-list";
+                                insights.important_numbers.forEach((item) => {
+                                    const row = document.createElement("li");
+                                    const value = document.createElement("strong");
+                                    const context = document.createElement("span");
+                                    value.textContent = item.value;
+                                    context.textContent = item.context;
+                                    row.append(value, context);
+                                    list.append(row);
+                                });
+                                numbersCard.lastElementChild.remove();
+                                numbersCard.append(list);
+                            } else {
+                                numbersCard.lastElementChild.textContent = insights.labels.no_numbers;
+                                numbersCard.lastElementChild.className = "quick-insights-empty";
+                            }
+                            nextResults.append(numbersCard);
+                            results.replaceChildren(nextResults);
+                            showToast("Quick insights are ready");
+                        } catch (error) {
+                            console.error("Quick insights request failed.", error);
+                            showToast(error.message || "Could not generate quick insights.", "error");
+                        } finally {
+                            loading.hidden = true;
+                            generateButton.disabled = false;
+                            generateButton.removeAttribute("aria-busy");
+                        }
+                    });
+                }
+
                 const copyButton = root.querySelector("#copy-summary");
                 if (copyButton) {
                     copyButton.addEventListener("click", async () => {
@@ -1704,6 +2140,8 @@
                         const search = root.querySelector("#graph-search");
                         const showMore = root.querySelector("#graph-show-more");
                         const topicCount = root.querySelector("#graph-topic-count");
+                        const zoomLevel = root.querySelector("#graph-zoom-level");
+                        const zoomControls = root.querySelectorAll("[data-graph-zoom]");
                         const svgNS = "http://www.w3.org/2000/svg";
                         const width = 1000;
                         const height = 640;
@@ -1713,10 +2151,10 @@
                         gradient.setAttribute("id", "graph-main-gradient");
                         const gradientStart = document.createElementNS(svgNS, "stop");
                         gradientStart.setAttribute("offset", "0%");
-                        gradientStart.setAttribute("stop-color", "#4f46e5");
+                        gradientStart.setAttribute("stop-color", "#287a91");
                         const gradientEnd = document.createElementNS(svgNS, "stop");
                         gradientEnd.setAttribute("offset", "100%");
-                        gradientEnd.setAttribute("stop-color", "#7c3aed");
+                        gradientEnd.setAttribute("stop-color", "#48a6a6");
                         gradient.append(gradientStart, gradientEnd);
                         definitions.appendChild(gradient);
                         svg.appendChild(definitions);
@@ -1725,6 +2163,22 @@
                         svg.appendChild(scene);
                         const view = { x: 0, y: 0, scale: 1 };
                         const applyTransform = () => scene.setAttribute("transform", `translate(${view.x} ${view.y}) scale(${view.scale})`);
+                        const setZoom = (scale) => {
+                            view.scale = Math.min(1.8, Math.max(.7, scale));
+                            applyTransform();
+                            zoomLevel.textContent = `${Math.round(view.scale * 100)}%`;
+                        };
+                        zoomControls.forEach((button) => {
+                            button.addEventListener("click", () => {
+                                if (button.dataset.graphZoom === "reset") {
+                                    view.x = 0;
+                                    view.y = 0;
+                                    setZoom(1);
+                                } else {
+                                    setZoom(view.scale * (button.dataset.graphZoom === "in" ? 1.15 : 1 / 1.15));
+                                }
+                            });
+                        });
                         const positions = new Map([[topics[0].id, center]]);
                         topics.slice(1).forEach((node, index) => {
                             const angle = (2 * Math.PI * index / 8) - Math.PI / 2;
@@ -1735,7 +2189,7 @@
                         });
                         const lineElements = [];
                         const nodeElements = [];
-                        const topicColors = ["#2563eb", "#7c3aed", "#4f46e5", "#0891b2", "#db2777", "#059669", "#d97706", "#6d28d9"];
+                        const topicColors = ["#287a91", "#48a6a6", "#527f9e", "#6b9baf", "#3f858d", "#638ca8", "#629b97", "#789db5"];
                         const addEdge = (node, end) => {
                             const line = document.createElementNS(svgNS, "line");
                             line.setAttribute("x1", center.x);
@@ -1822,6 +2276,7 @@
                             topicCount.textContent = `Showing ${total} main ${total === 1 ? "topic" : "topics"}`;
                             const remaining = additionalTopics.length - visibleAdditional;
                             showMore.hidden = remaining <= 0;
+                            showMore.setAttribute("aria-expanded", String(visibleAdditional > 0));
                             showMore.innerHTML = `Show More (${Math.min(4, remaining)}) <span aria-hidden="true">↓</span>`;
                         };
                         showMore.addEventListener("click", () => {
@@ -1861,8 +2316,7 @@
                         ["pointerup", "pointercancel"].forEach((name) => svg.addEventListener(name, () => { dragStart = null; }));
                         svg.addEventListener("wheel", (event) => {
                             event.preventDefault();
-                            view.scale = Math.min(1.8, Math.max(.7, view.scale * (event.deltaY < 0 ? 1.08 : .92)));
-                            applyTransform();
+                            setZoom(view.scale * (event.deltaY < 0 ? 1.08 : .92));
                         }, { passive: false });
                         search.addEventListener("input", () => {
                             const query = search.value.trim().toLocaleLowerCase();

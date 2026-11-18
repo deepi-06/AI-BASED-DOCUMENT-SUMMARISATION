@@ -1,22 +1,24 @@
 # AI-Based Document Summarisation System
 
 A beginner-friendly local web app that summarises PDF, DOCX and TXT documents using AI.
-Built with **Python, Flask, HTML/CSS and the Groq API**. It runs entirely on your own
-computer (no cloud deployment).
+Built with **Python, Flask, HTML/CSS, and the Groq and Gemini APIs**. The app runs
+locally; document text is sent to whichever configured AI provider processes a request.
 
 ## Features
 
-- Responsive left-side workspace navigation with collapsible sidebar, theme settings, and browser-local summary history
+- Responsive left-side workspace navigation with collapsible sidebar, a dark navy default theme, appearance settings, and browser-local summary history
 - Upload a **PDF, DOCX or TXT** document
 - Automatic text extraction (PyPDF, python-docx)
 - AI summary in three lengths: **Short**, **Medium**, **Detailed**
 - Executive, five-point bullet, TL;DR, or custom-length summaries
-- Summary in English, Tamil, Hindi and other common languages, with a custom language option
+- Select English, Tamil, Hindi, or another supported/custom language as the output language for summaries, analysis, map labels, highlights, chat, comparisons, and study questions
+- The selected output language is preserved across workspace pages and enforced in both Groq and Gemini prompts
 - **Key points** list for every summary
 - Document type, main topic and keywords
 - Interactive knowledge graph of document concepts and relationships
 - Importance-coloured extracted-text viewer linked to summary key points
 - **Compare Documents** (PDF, DOCX or TXT) with similarities, additions, removals, and important differences
+- **Quick Insights** with a document-grounded takeaway, document type, difficulty, reading-time estimate, topic tags, and verified key numbers
 - **Ask AI chat** with multiple follow-up questions grounded in the uploaded document
 - Study mode with key-point review, animated flashcards, timed MCQ quizzes with explanations and topic-wise scoring, self-check quizzes, and 2-mark, 5-mark and 10-mark exam question generation
 - A local productivity dashboard with document, token, processing-time and quiz analytics
@@ -30,7 +32,7 @@ computer (no cloud deployment).
 AI-Document-Summarisation/
 ├── app.py               # Flask routes (upload, summarise, download)
 ├── analytics.py         # Local SQLite usage and quiz analytics
-├── summarizer.py        # Groq API calls, chunking, prompts
+├── summarizer.py        # Groq/Gemini API calls, chunking, prompts
 ├── document_reader.py   # Text extraction for PDF / DOCX / TXT
 ├── requirements.txt     # Python dependencies
 ├── .env.example         # Template for your API key
@@ -47,7 +49,7 @@ AI-Document-Summarisation/
 ### 1. Requirements
 - Python 3.9 or newer (https://www.python.org/downloads/ - tick "Add Python to PATH" on Windows)
 - VS Code with the **Python** extension
-- A free Groq API key: https://console.groq.com/keys
+- A Groq API key, a Gemini API key, or both for provider fallback
 
 ### 2. Open the project
 Unzip the folder, then in VS Code: **File > Open Folder...** and choose `AI-Document-Summarisation`.
@@ -83,11 +85,13 @@ Copy `.env.example` to a new file named `.env`:
 **Windows:** `copy .env.example .env`  
 **macOS / Linux:** `cp .env.example .env`
 
-Open `.env` and replace the placeholder with your real key:
+Open `.env` and replace the placeholder for at least one provider:
 ```
 GROQ_API_KEY=gsk_your_real_key_here
+GEMINI_API_KEY=your_real_gemini_key_here
 ```
-Never share or commit the `.env` file (it is already listed in `.gitignore`).
+You can configure either provider or both for fallback. Never share or commit
+the `.env` file (it is already listed in `.gitignore`).
 
 ### 6. Run the app
 ```
@@ -99,10 +103,10 @@ Open **http://127.0.0.1:5000** in your browser.
 
 1. Upload a PDF, DOCX or TXT document (max 10 MB).
 2. Choose Executive Summary, Bullet Points, TL;DR, or a custom Short/Medium/Detailed summary, then select the output language.
-3. Use the sidebar to move between the summary, analysis, knowledge map, Ask AI, study tools, and document comparison.
+3. Use the sidebar to move between the summary, Quick Insights, analysis, knowledge map, Ask AI, study tools, and document comparison.
 4. Review the document insights, explore the clickable knowledge graph, and follow the green/yellow/neutral sentence highlights to related key points.
 5. Ask document-grounded questions or open Study mode to review key points, practise flashcards, and generate exam questions for a self-check quiz.
-6. Use **Compare Documents** to compare another pair of PDF, DOCX or TXT files (max 10 MB each).
+6. Open **Quick Insights** for a concise snapshot, then use **Compare Documents** to compare another pair of PDF, DOCX or TXT files (max 10 MB each), including their unique topics, differences, and findings.
 7. Open **Dashboard** for locally recorded usage metrics and quiz performance, or **History** for summaries saved in this browser. Use **Settings** to switch the light/dark appearance.
 8. Download the generated summary as a `.txt` file if desired.
 

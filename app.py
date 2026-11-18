@@ -86,6 +86,7 @@ from summarizer import (
     compare_documents,
     generate_exam_questions,
     generate_mcq_questions,
+    generate_quick_insights,
     highlight_document,
     prepare_document_source,
 )
@@ -191,7 +192,7 @@ def _get_document_context(token):
 
 def _render_form(
     summary_type="medium",
-    language="english",
+    language=None,
     summary_format="custom",
     view="home",
     **context,
@@ -206,11 +207,19 @@ def _render_form(
         saved_context = _get_document_context(token)
 
         if saved_context is not None:
+            cached_insights = saved_context.get("quick_insights")
 
             active_context = {
                 "result": saved_context["result"],
                 "filename": saved_context["filename"],
                 "document_id": token,
+                "language": saved_context["language"],
+                "quick_insights": (
+                    cached_insights
+                    if isinstance(cached_insights, dict)
+                    and cached_insights.get("schema_version") == 2
+                    else None
+                ),
                 "study_quiz": saved_context.get("study_quiz"),
                 "study_quiz_result": saved_context.get("study_quiz_result"),
             }
@@ -219,7 +228,14 @@ def _render_form(
 
             session.pop("document_id", None)
 
-    if view == "dashboard":
+    if language is None:
+        language = (
+            active_context.get("language")
+            or session.get("selected_language")
+            or "english"
+        )
+
+    if view in {"home", "dashboard"}:
         context["dashboard_data"] = get_dashboard_data()
 
     return render_template(
@@ -278,6 +294,46 @@ def _check_ai_providers():
     return providers
 
 
+def _selected_language_from_form():
+    """Validate the selected language and retain custom language names."""
+
+    fallback = session.get("selected_language", "english")
+    language = request.form.get("language", fallback).strip().lower()
+
+    if language == "other":
+        custom_language = " ".join(
+            request.form.get("custom_language", "").split()
+        )
+
+        if re.fullmatch(
+            r"[\w][\w .+-]{1,39}",
+            custom_language,
+            flags=re.UNICODE,
+        ):
+            return custom_language
+
+        return fallback
+
+    if language in SUMMARY_LANGUAGES:
+        return language
+
+    return fallback
+
+
+@app.post("/language")
+def save_language_preference():
+    """Persist the chosen output language between workspace pages."""
+
+    language = _selected_language_from_form()
+    session["selected_language"] = language
+    context = _get_document_context(session.get("document_id"))
+    if context is not None:
+        if context["language"] != language:
+            context.pop("quick_insights", None)
+        context["language"] = language
+    return jsonify(language=language)
+
+
 # ==========================================
 # 8. HOME AND DOCUMENT UPLOAD
 # ==========================================
@@ -296,30 +352,8 @@ def index():
     if summary_type not in SUMMARY_TYPES:
         summary_type = "medium"
 
-    language = request.form.get(
-        "language",
-        "english"
-    ).lower()
-
-    if language == "other":
-
-        language = " ".join(
-            request.form.get(
-                "custom_language",
-                ""
-            ).split()
-        )
-
-        if not re.fullmatch(
-            r"[\w][\w .+-]{1,39}",
-            language,
-            flags=re.UNICODE,
-        ):
-            language = "english"
-
-    elif language not in SUMMARY_LANGUAGES:
-
-        language = "english"
+    language = _selected_language_from_form()
+    session["selected_language"] = language
 
     summary_format = request.form.get(
         "summary_format",
@@ -422,7 +456,7 @@ def index():
     # AI summarization and document analysis.
     try:
 
-        prepared_source = prepare_document_source(text)
+        prepared_source = prepare_document_source(text, language)
 
         result = analyze_document_bundle(
             text,
@@ -430,6 +464,13 @@ def index():
             language,
             summary_format,
             prepared_source=prepared_source,
+        )
+        result["highlights"] = highlight_document(
+            text,
+            result["summary"],
+            result["key_points"],
+            result["graph"],
+            language=language,
         )
 
     except SummarizerError as error:
@@ -451,14 +492,6 @@ def index():
             "An unexpected error occurred while "
             "processing the document. Please try again."
         )
-
-    # Generate document highlights.
-    result["highlights"] = highlight_document(
-        text,
-        result["summary"],
-        result["key_points"],
-        result["graph"],
-    )
 
     # Store document context.
     token = _store_document_context(
@@ -502,6 +535,7 @@ def workspace_page(view):
         "mind-map",
         "ask-ai",
         "comparison",
+        "quick-insights",
         "study-mode",
         "dashboard",
         "history",
@@ -640,7 +674,8 @@ def ask():
         answer = answer_question(
             context["text"],
             question,
-            conversation
+            conversation,
+            language=context["language"],
         )
 
     except SummarizerError as error:
@@ -700,6 +735,63 @@ def ask():
     )
 
 
+@app.post("/quick-insights")
+def quick_insights():
+    """Return a cached or freshly generated snapshot for the active document."""
+
+    payload = request.get_json(silent=True)
+    if not isinstance(payload, dict):
+        return jsonify(error="The quick-insights request must be a JSON object."), 400
+
+    token = payload.get("document_id")
+    context = _get_document_context(token) if isinstance(token, str) else None
+    if context is None:
+        return jsonify(
+            error="This document session has expired. Please upload it again."
+        ), 410
+
+    try:
+        insights = context.get("quick_insights")
+        if (
+            not isinstance(insights, dict)
+            or insights.get("schema_version") != 2
+            or insights.get("language") != context["language"]
+        ):
+            insights = generate_quick_insights(
+                context["text"],
+                language=context["language"],
+            )
+            insights["language"] = context["language"]
+            insights["schema_version"] = 2
+
+        source_words = len(context["text"].split())
+        summary_words = len(context["result"]["summary"].split())
+        saved_seconds = max(0, source_words - summary_words) * 60 / 200
+        minutes_saved = saved_seconds / 60
+        minute_unit = insights["labels"]["minute_unit"]
+        insights["reading_time_saved_label"] = (
+            f"<1 {minute_unit}"
+            if 0 < saved_seconds < 60
+            else f"{minutes_saved:.1f} {minute_unit}"
+        )
+        context["quick_insights"] = insights
+        return jsonify(
+            insights=insights,
+            document_type=insights["document_type"],
+            reading_time_saved_seconds=round(saved_seconds),
+            document_word_count=source_words,
+            summary_word_count=summary_words,
+        )
+    except SummarizerError as error:
+        app.logger.warning("Quick insight generation failed: %s", error)
+        return jsonify(error=str(error)), 502
+    except Exception:
+        app.logger.exception("Unexpected error generating quick insights.")
+        return jsonify(
+            error="Quick insights could not be generated right now. Please try again."
+        ), 500
+
+
 # ==========================================
 # 10. EXAM QUESTION GENERATION
 # ==========================================
@@ -727,7 +819,8 @@ def exam_questions():
     try:
 
         questions = generate_exam_questions(
-            context["text"]
+            context["text"],
+            language=context["language"],
         )
 
     except SummarizerError as error:
@@ -789,7 +882,10 @@ def study_quiz():
         ), 410
 
     try:
-        questions = generate_mcq_questions(context["text"])
+        questions = generate_mcq_questions(
+            context["text"],
+            language=context["language"],
+        )
     except SummarizerError as error:
         app.logger.warning("MCQ generation failed: %s", error)
         return jsonify(error=str(error)), 502
@@ -936,6 +1032,9 @@ def _read_uploaded_file(uploaded_file):
 @app.route("/compare", methods=["POST"])
 def compare():
 
+    language = _selected_language_from_form()
+    session["selected_language"] = language
+
     try:
 
         _check_ai_providers()
@@ -958,7 +1057,8 @@ def compare():
 
         comparison = compare_documents(
             text_a,
-            text_b
+            text_b,
+            language=language,
         )
 
     except DocumentError as error:
